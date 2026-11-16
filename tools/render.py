@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Render a versions/<x>/layout.yaml into its platform/visual artifacts.
 
-    python3 tools/render.py v2.0.0
-        writes versions/v2.0.0/generated/avayi.xkb_symbols
-           and versions/v2.0.0/generated/layout.svg
+    python3 tools/render.py v0.0.2
+        writes versions/v0.0.2/generated/avayi.xkb_symbols
+           and versions/v0.0.2/generated/layout.svg
 
-    python3 tools/render.py v2.0.0 --compare v1.0.0
-        also writes versions/v2.0.0/generated/vs-v1.0.0.svg,
+    python3 tools/render.py v0.0.2 --compare v0.0.1
+        also writes versions/v0.0.2/generated/vs-v0.0.1.svg,
         both versions stacked in one diagram for an at-a-glance diff.
 
 layout.yaml is the only input; nothing here is hand-edited.
@@ -116,7 +116,7 @@ def render_xkb(layout):
         base_cps = cp_list(spec.get("base"))
         shift_cps = cp_list(spec.get("shift")) or base_cps
         if len(base_cps) > 1 or len(shift_cps) > 1:
-            # a multi-codepoint ligature (v1.0.0-style) has no single XKB keysym;
+            # a multi-codepoint ligature (v0.0.1-style) has no single XKB keysym;
             # skip it here and note it, rather than emit something misleading.
             lines.append(f"    // {key}: multi-codepoint value, no single keysym — skipped")
             continue
@@ -225,7 +225,7 @@ SINGLE_WIDTH = PAD * 2 + BOARD_W
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("version", help="e.g. v2.0.0 (must match a versions/<name>/ folder)")
+    ap.add_argument("version", help="e.g. v0.0.2 (must match a versions/<name>/ folder)")
     ap.add_argument("--compare", metavar="OTHER_VERSION", help="also render OTHER_VERSION stacked below, for a diff view")
     args = ap.parse_args()
 

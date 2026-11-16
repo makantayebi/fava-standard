@@ -11,10 +11,10 @@ not the other way around. If a platform file and `layout.yaml` disagree,
 ## Top-level fields
 
 ```yaml
-version: "2.0.0"          # must match the folder name (versions/v2.0.0/)
+version: "0.0.2"          # must match the folder name (versions/v0.0.2/)
 name: "Fava (فاوآیی)"
 date: 2026-11-16          # YYYY-MM-DD, the date this version was decided
-supersedes: "1.0.0"       # previous version's string, or null for the first
+supersedes: "0.0.1"       # previous version's string, or null for the first
 summary: >
   One or two sentences: what changed and why, for someone skimming
   CHANGELOG.md. Full detail goes in this version's notes.md.
@@ -27,9 +27,9 @@ keys:
 
 Keys are named by physical position, not by whatever letter happens to
 be printed on a US keyboard there — this is deliberate, because the
-Windows `.klc` source for v1.0.0 turned out to have its `VK_` *label*
+Windows `.klc` source for v0.0.1 turned out to have its `VK_` *label*
 for two keys swapped relative to their true hardware scancode (see
-`versions/v1.0.0/notes.md`). Naming keys by physical slot instead of by
+`versions/v0.0.1/notes.md`). Naming keys by physical slot instead of by
 label makes that class of bug impossible to re-introduce here.
 
 Names follow the standard Linux/XKB evdev naming (also exactly what
@@ -70,21 +70,21 @@ keys:
   shift-lock-across-everything behavior — see `README.md`).
 - A value may be a **list** of codepoints instead of one, for a key that
   historically emitted more than one character per press (only used in
-  `v1.0.0`, to record Windows' literal "space + combining mark" ligature
+  `v0.0.1`, to record Windows' literal "space + combining mark" ligature
   keys — a platform-specific padding trick later versions don't need,
   since modern text shaping attaches a bare combining mark to the
   previous glyph on its own). Example:
 
   ```yaml
-  AD01:                          # Q, in v1.0.0 only
+  AD01:                          # Q, in v0.0.1 only
     base: ["U+0020", "U+064E"]   # SPACE + ARABIC FATHA
   ```
 
 ## Rendering a version
 
 ```bash
-python3 tools/render.py v2.0.0
+python3 tools/render.py v0.0.2
 ```
-writes `versions/v2.0.0/generated/avayi.xkb_symbols` (drop-in for
+writes `versions/v0.0.2/generated/avayi.xkb_symbols` (drop-in for
 `ubuntu-keyboard/symbols/avayi.xkb_symbols`) and SVG keyboard diagrams
-into `versions/v2.0.0/generated/`. See `tools/render.py --help`.
+into `versions/v0.0.2/generated/`. See `tools/render.py --help`.

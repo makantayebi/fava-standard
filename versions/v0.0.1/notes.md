@@ -1,4 +1,4 @@
-# v1.0.0 — original Windows baseline
+# v0.0.1 — original Windows baseline
 
 The first Fava layout, authored in Microsoft Keyboard Layout Creator
 (MSKLC) 1.4 as `Farsi-Avayi.klc` (internal KBD name `PE4`, description
@@ -44,4 +44,4 @@ dead key.
 Later versions don't carry this padding forward: modern text shaping
 (HarfBuzz/Pango, used by every current Linux/Android/iOS text stack)
 attaches a bare combining mark to whatever precedes it without needing
-a placeholder. See `../v2.0.0/notes.md`.
+a placeholder. See `../v0.0.2/notes.md`.

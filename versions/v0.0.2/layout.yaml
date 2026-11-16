@@ -1,7 +1,7 @@
-version: "2.0.0"
+version: "0.0.2"
 name: "Fava (فاوآیی)"
 date: 2026-11-16
-supersedes: "1.0.0"
+supersedes: "0.0.1"
 summary: >
   The current design, developed on the Linux implementation. Drops the
   Windows-only ligature padding in favor of bare combining marks, and
@@ -9,7 +9,7 @@ summary: >
   fatha/damma/kasra), Y is shadda (was yeh), D is yeh (was a yeh+sukun
   ligature), X is jeh (was waw), and the comma key is waw (was a
   waw+sukun ligature). See notes.md for the full story, including an
-  unintentional deviation from v1.0.0 that predates all of the above.
+  unintentional deviation from v0.0.1 that predates all of the above.
 
 keys:
   TLDE: { base: "U+00F7", shift: "U+00D7" }   # ÷ / × — unchanged
@@ -27,9 +27,9 @@ keys:
   AE11: { base: "U+002D", shift: "U+005F" }   # unchanged
   AE12: { base: "U+003D", shift: "U+002B" }   # unchanged
 
-  AD01: { base: "U+064F" }                    # Q: ـُ ARABIC DAMMA — was fatha (ligature) in v1.0.0
-  AD02: { base: "U+0650" }                    # W: ـِ ARABIC KASRA — was damma (ligature) in v1.0.0
-  AD03: { base: "U+064E" }                    # E: ـَ ARABIC FATHA — was kasra (ligature) in v1.0.0
+  AD01: { base: "U+064F" }                    # Q: ـُ ARABIC DAMMA — was fatha (ligature) in v0.0.1
+  AD02: { base: "U+0650" }                    # W: ـِ ARABIC KASRA — was damma (ligature) in v0.0.1
+  AD03: { base: "U+064E" }                    # E: ـَ ARABIC FATHA — was kasra (ligature) in v0.0.1
   AD04: { base: "U+0642" }                    # R: ق — unchanged
   AD05: { base: "U+0641", shift: "U+060C" }   # T: ف / ، — unchanged
   AD06: { base: "U+0651" }                    # Y: ـّ ARABIC SHADDA — see notes.md for the full Y lineage
@@ -43,7 +43,7 @@ keys:
 
   AC01: { base: "U+0634" }                    # A: ش — unchanged
   AC02: { base: "U+0633" }                    # S: س — unchanged
-  AC03: { base: "U+06CC" }                    # D: ی FARSI YEH — was a یْ ligature in v1.0.0
+  AC03: { base: "U+06CC" }                    # D: ی FARSI YEH — was a یْ ligature in v0.0.1
   AC04: { base: "U+0628" }                    # F: ب — unchanged
   AC05: { base: "U+0644" }                    # G: ل — unchanged
   AC06: { base: "U+0622" }                    # H: آ — unchanged
@@ -54,13 +54,13 @@ keys:
   AC11: { base: "U+06AF", shift: "U+061B" }   # ': گ / ؛ — unchanged
 
   AB01: { base: "U+200C" }                    # physically Z: ZWNJ — see notes.md for the full Y/Z lineage
-  AB02: { base: "U+0698" }                    # X: ژ JEH — was waw in v1.0.0
+  AB02: { base: "U+0698" }                    # X: ژ JEH — was waw in v0.0.1
   AB03: { base: "U+0632" }                    # C: ز — unchanged
   AB04: { base: "U+0631" }                    # V: ر — unchanged
   AB05: { base: "U+0698" }                    # B: ژ JEH — unchanged (now duplicated on X too, deliberately)
   AB06: { base: "U+062F" }                    # N: د — unchanged
   AB07: { base: "U+067E" }                    # M: پ — unchanged
-  AB08: { base: "U+0648" }                    # ,: و WAW — was a وْ ligature in v1.0.0
+  AB08: { base: "U+0648" }                    # ,: و WAW — was a وْ ligature in v0.0.1
   AB09: { base: "U+002E" }                    # .: unchanged
   AB10: { base: "U+002F", shift: "U+061F" }   # /: unchanged
 

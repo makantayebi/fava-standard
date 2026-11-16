@@ -3,7 +3,7 @@
 All notable changes to the Fava layout. Each entry links to the full
 writeup in that version's `notes.md`.
 
-## v2.0.0 — 2026-11-16
+## v0.0.2 — 2026-11-16
 
 Developed while building the Ubuntu/Linux implementation and a
 side-by-side diagram comparing it against the original Windows file.
@@ -20,14 +20,14 @@ side-by-side diagram comparing it against the original Windows file.
 - **Also documented, not changed:** an unintentional swap of physical Y
   and Z discovered during this work — the Linux port had carried ZWNJ
   on Z and yeh on Y since it was first created, the reverse of what the
-  true v1.0.0 Windows file does. v2.0.0 does not restore v1.0.0's Y/Z;
+  true v0.0.1 Windows file does. v0.0.2 does not restore v0.0.1's Y/Z;
   it knowingly builds on top of the swapped state. Full story in
-  [`versions/v2.0.0/notes.md`](versions/v2.0.0/notes.md).
+  [`versions/v0.0.2/notes.md`](versions/v0.0.2/notes.md).
 
-## v1.0.0 — 2021-10-13
+## v0.0.1 — 2021-10-13
 
 Original layout, authored in Microsoft Keyboard Layout Creator, shipped
 as the `PE5` Windows installer. Historical baseline.
 
 Details, including a `VK_`-label quirk in the source `.klc` file, in
-[`versions/v1.0.0/notes.md`](versions/v1.0.0/notes.md).
+[`versions/v0.0.1/notes.md`](versions/v0.0.1/notes.md).

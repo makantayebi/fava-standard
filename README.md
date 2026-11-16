@@ -11,11 +11,11 @@ machine. Those are downstream of this one.
 
 ```
 versions/
-  v1.0.0/
+  v0.0.1/
     layout.yaml     <- the definition: every physical key, what it types
     notes.md        <- why, in prose
     generated/      <- output of tools/render.py, checked in for convenience
-  v2.0.0/
+  v0.0.2/
     layout.yaml
     notes.md
     generated/
@@ -40,15 +40,25 @@ reference/
 
 ## Versioning
 
-Plain `major.minor.patch`, as a folder name and a matching Git tag:
+`major.minor.patch`, as a folder name and a matching Git tag — but
+we're deliberately still at **major version 0**, meaning every change
+just bumps the trailing digit (`0.0.1` → `0.0.2` → `0.0.3`...)
+regardless of how big it is. This isn't an oversight: per
+[SemVer itself](https://semver.org/#spec-item-4), "major version zero
+(0.y.z) is for initial development... anything MAY change at any time."
+The layout is still actively being redesigned key by key — claiming a
+`1.0.0` right now would assert a stability this doesn't have yet.
+
+Once the design is actually settled enough to commit to, `1.0.0` gets
+declared deliberately, and *from that point on*:
 - **major** — a key does something semantically different (a different
   letter, mark, or symbol than before).
 - **minor** — new keys/behavior added without changing existing ones.
 - **patch** — a correction to documentation/metadata, no behavior change.
 
-There are two versions so far. `v1.0.0` is the original Windows design;
-`v2.0.0` is a substantial reassignment of several keys developed while
-building the Ubuntu port — see `versions/v2.0.0/notes.md`, which also
+There are two versions so far. `v0.0.1` is the original Windows design;
+`v0.0.2` is a substantial reassignment of several keys developed while
+building the Ubuntu port — see `versions/v0.0.2/notes.md`, which also
 documents an unintentional Y/Z mixup discovered along the way. Read that
 one first if you want the full, slightly messy, honest history.
 
@@ -56,17 +66,17 @@ one first if you want the full, slightly messy, honest history.
 
 ```bash
 pip install pyyaml   # the only dependency
-python3 tools/render.py v2.0.0
-#   -> versions/v2.0.0/generated/avayi.xkb_symbols
-#   -> versions/v2.0.0/generated/layout.svg
+python3 tools/render.py v0.0.2
+#   -> versions/v0.0.2/generated/avayi.xkb_symbols
+#   -> versions/v0.0.2/generated/layout.svg
 
-python3 tools/render.py v2.0.0 --compare v1.0.0
-#   -> also: versions/v2.0.0/generated/vs-v1.0.0.svg (both, stacked)
+python3 tools/render.py v0.0.2 --compare v0.0.1
+#   -> also: versions/v0.0.2/generated/vs-v0.0.1.svg (both, stacked)
 ```
 
 Currently generates: an XKB `.xkb_symbols` block (Linux), and SVG
 keyboard diagrams. Does **not** yet generate a Windows `.klc` — that's
-unbuilt future work (see `versions/v2.0.0/notes.md`, "Known gaps").
+unbuilt future work (see `versions/v0.0.2/notes.md`, "Known gaps").
 
 ## Reference material
 
