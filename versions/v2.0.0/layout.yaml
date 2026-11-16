@@ -1,0 +1,69 @@
+version: "2.0.0"
+name: "Fava (فاوآیی)"
+date: 2026-11-16
+supersedes: "1.0.0"
+summary: >
+  The current design, developed on the Linux implementation. Drops the
+  Windows-only ligature padding in favor of bare combining marks, and
+  reassigns several keys: Q/W/E now cycle damma/kasra/fatha (was
+  fatha/damma/kasra), Y is shadda (was yeh), D is yeh (was a yeh+sukun
+  ligature), X is jeh (was waw), and the comma key is waw (was a
+  waw+sukun ligature). See notes.md for the full story, including an
+  unintentional deviation from v1.0.0 that predates all of the above.
+
+keys:
+  TLDE: { base: "U+00F7", shift: "U+00D7" }   # ÷ / × — unchanged
+
+  AE01: { base: "U+06F1", shift: "U+0021" }   # unchanged
+  AE02: { base: "U+06F2", shift: "U+0040" }   # unchanged
+  AE03: { base: "U+06F3", shift: "U+0023" }   # unchanged
+  AE04: { base: "U+06F4", shift: "U+FDFC" }   # unchanged
+  AE05: { base: "U+06F5", shift: "U+0025" }   # unchanged
+  AE06: { base: "U+06F6", shift: "U+005E" }   # unchanged
+  AE07: { base: "U+06F7", shift: "U+00B0" }   # unchanged
+  AE08: { base: "U+06F8", shift: "U+002A" }   # unchanged
+  AE09: { base: "U+06F9", shift: "U+0028" }   # unchanged
+  AE10: { base: "U+06F0", shift: "U+0029" }   # unchanged
+  AE11: { base: "U+002D", shift: "U+005F" }   # unchanged
+  AE12: { base: "U+003D", shift: "U+002B" }   # unchanged
+
+  AD01: { base: "U+064F" }                    # Q: ـُ ARABIC DAMMA — was fatha (ligature) in v1.0.0
+  AD02: { base: "U+0650" }                    # W: ـِ ARABIC KASRA — was damma (ligature) in v1.0.0
+  AD03: { base: "U+064E" }                    # E: ـَ ARABIC FATHA — was kasra (ligature) in v1.0.0
+  AD04: { base: "U+0642" }                    # R: ق — unchanged
+  AD05: { base: "U+0641", shift: "U+060C" }   # T: ف / ، — unchanged
+  AD06: { base: "U+0651" }                    # Y: ـّ ARABIC SHADDA — see notes.md for the full Y lineage
+  AD07: { base: "U+062C" }                    # U: ج — unchanged
+  AD08: { base: "U+0647" }                    # I: ه — unchanged
+  AD09: { base: "U+062E" }                    # O: خ — unchanged
+  AD10: { base: "U+0686" }                    # P: چ — unchanged
+  AD11: { base: "U+007B", shift: "U+005B" }   # [: unchanged
+  AD12: { base: "U+007D", shift: "U+005D" }   # ]: unchanged
+  BKSL: { base: "U+005C", shift: "U+007C" }   # unchanged
+
+  AC01: { base: "U+0634" }                    # A: ش — unchanged
+  AC02: { base: "U+0633" }                    # S: س — unchanged
+  AC03: { base: "U+06CC" }                    # D: ی FARSI YEH — was a یْ ligature in v1.0.0
+  AC04: { base: "U+0628" }                    # F: ب — unchanged
+  AC05: { base: "U+0644" }                    # G: ل — unchanged
+  AC06: { base: "U+0622" }                    # H: آ — unchanged
+  AC07: { base: "U+062A", shift: "U+0640" }   # J: ت / ـ — unchanged
+  AC08: { base: "U+0646" }                    # K: ن — unchanged
+  AC09: { base: "U+0645" }                    # L: م — unchanged
+  AC10: { base: "U+06A9", shift: "U+003A" }   # ;: ک / : — unchanged
+  AC11: { base: "U+06AF", shift: "U+061B" }   # ': گ / ؛ — unchanged
+
+  AB01: { base: "U+200C" }                    # physically Z: ZWNJ — see notes.md for the full Y/Z lineage
+  AB02: { base: "U+0698" }                    # X: ژ JEH — was waw in v1.0.0
+  AB03: { base: "U+0632" }                    # C: ز — unchanged
+  AB04: { base: "U+0631" }                    # V: ر — unchanged
+  AB05: { base: "U+0698" }                    # B: ژ JEH — unchanged (now duplicated on X too, deliberately)
+  AB06: { base: "U+062F" }                    # N: د — unchanged
+  AB07: { base: "U+067E" }                    # M: پ — unchanged
+  AB08: { base: "U+0648" }                    # ,: و WAW — was a وْ ligature in v1.0.0
+  AB09: { base: "U+002E" }                    # .: unchanged
+  AB10: { base: "U+002F", shift: "U+061F" }   # /: unchanged
+
+  LSGT: { base: "U+20AC", shift: "U+00A7" }   # unchanged
+  KPDL: { base: "U+002E", shift: "U+002E" }   # unchanged
+  SPCE: { base: "U+0020", shift: "U+0020" }   # unchanged

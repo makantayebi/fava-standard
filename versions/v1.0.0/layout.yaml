@@ -1,0 +1,66 @@
+version: "1.0.0"
+name: "Fava (فاوآیی)"
+date: 2021-10-13
+supersedes: null
+summary: >
+  The original layout as authored in Microsoft Keyboard Layout Creator
+  and shipped via the PE5 Windows installer. Historical baseline — not
+  edited going forward. See notes.md for a known quirk in the source
+  .klc file that this version's key naming deliberately works around.
+
+keys:
+  TLDE: { base: "U+00F7", shift: "U+00D7" }   # ÷ DIVISION SIGN / × MULTIPLICATION SIGN
+
+  AE01: { base: "U+06F1", shift: "U+0021" }   # ۱ / !
+  AE02: { base: "U+06F2", shift: "U+0040" }   # ۲ / @
+  AE03: { base: "U+06F3", shift: "U+0023" }   # ۳ / #
+  AE04: { base: "U+06F4", shift: "U+FDFC" }   # ۴ / ﷼ RIAL SIGN
+  AE05: { base: "U+06F5", shift: "U+0025" }   # ۵ / %
+  AE06: { base: "U+06F6", shift: "U+005E" }   # ۶ / ^
+  AE07: { base: "U+06F7", shift: "U+00B0" }   # ۷ / ° DEGREE SIGN
+  AE08: { base: "U+06F8", shift: "U+002A" }   # ۸ / *
+  AE09: { base: "U+06F9", shift: "U+0028" }   # ۹ / (
+  AE10: { base: "U+06F0", shift: "U+0029" }   # ۰ / )
+  AE11: { base: "U+002D", shift: "U+005F" }   # - / _
+  AE12: { base: "U+003D", shift: "U+002B" }   # = / +
+
+  AD01: { base: ["U+0020", "U+064E"] }        # Q: SPACE + ARABIC FATHA (ـَ) — Windows ligature padding
+  AD02: { base: ["U+0020", "U+064F"] }        # W: SPACE + ARABIC DAMMA (ـُ)
+  AD03: { base: ["U+0020", "U+0650"] }        # E: SPACE + ARABIC KASRA (ـِ)
+  AD04: { base: "U+0642" }                    # R: ق ARABIC LETTER QAF
+  AD05: { base: "U+0641", shift: "U+060C" }   # T: ف FEH / ، ARABIC COMMA
+  AD06: { base: "U+200C" }                    # physically Y: ZERO WIDTH NON-JOINER — see notes.md
+  AD07: { base: "U+062C" }                    # U: ج ARABIC LETTER JEEM
+  AD08: { base: "U+0647" }                    # I: ه ARABIC LETTER HEH
+  AD09: { base: "U+062E" }                    # O: خ ARABIC LETTER KHAH
+  AD10: { base: "U+0686" }                    # P: چ ARABIC LETTER TCHEH
+  AD11: { base: "U+007B", shift: "U+005B" }   # [: { / [ (intentionally reversed)
+  AD12: { base: "U+007D", shift: "U+005D" }   # ]: } / ]
+  BKSL: { base: "U+005C", shift: "U+007C" }   # \ / |
+
+  AC01: { base: "U+0634" }                    # A: ش ARABIC LETTER SHEEN
+  AC02: { base: "U+0633" }                    # S: س ARABIC LETTER SEEN
+  AC03: { base: ["U+06CC", "U+0652"] }        # D: ARABIC LETTER FARSI YEH + ARABIC SUKUN (یْ) — ligature padding
+  AC04: { base: "U+0628" }                    # F: ب ARABIC LETTER BEH
+  AC05: { base: "U+0644" }                    # G: ل ARABIC LETTER LAM
+  AC06: { base: "U+0622" }                    # H: آ ARABIC LETTER ALEF WITH MADDA ABOVE
+  AC07: { base: "U+062A", shift: "U+0640" }   # J: ت TEH / ـ ARABIC TATWEEL
+  AC08: { base: "U+0646" }                    # K: ن ARABIC LETTER NOON
+  AC09: { base: "U+0645" }                    # L: م ARABIC LETTER MEEM
+  AC10: { base: "U+06A9", shift: "U+003A" }   # ;: ک KEHEH / :
+  AC11: { base: "U+06AF", shift: "U+061B" }   # ': گ GAF / ؛ ARABIC SEMICOLON
+
+  AB01: { base: "U+06CC" }                    # physically Z: ی ARABIC LETTER FARSI YEH — see notes.md
+  AB02: { base: "U+0648" }                    # X: و ARABIC LETTER WAW
+  AB03: { base: "U+0632" }                    # C: ز ARABIC LETTER ZAIN
+  AB04: { base: "U+0631" }                    # V: ر ARABIC LETTER REH
+  AB05: { base: "U+0698" }                    # B: ژ ARABIC LETTER JEH
+  AB06: { base: "U+062F" }                    # N: د ARABIC LETTER DAL
+  AB07: { base: "U+067E" }                    # M: پ ARABIC LETTER PEH
+  AB08: { base: ["U+0648", "U+0652"] }        # ,: ARABIC LETTER WAW + ARABIC SUKUN (وْ) — ligature padding
+  AB09: { base: "U+002E" }                    # .: full stop
+  AB10: { base: "U+002F", shift: "U+061F" }   # /: solidus / ؟ ARABIC QUESTION MARK
+
+  LSGT: { base: "U+20AC", shift: "U+00A7" }   # ISO 102nd key: € / §
+  KPDL: { base: "U+002E", shift: "U+002E" }   # numpad decimal: . / .
+  SPCE: { base: "U+0020", shift: "U+0020" }   # space bar: space / space
