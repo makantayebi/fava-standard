@@ -1,0 +1,59 @@
+# Persian-specific phonology, for future Fava mapping decisions.
+# See persian-phonology.md for prose, sourcing, and the merge-groups table.
+# This file doesn't define any Fava spelling — it's input, not output.
+#
+# `ipa` is a list because several letters are genuinely multi-valued in
+# Persian depending on position (و, ی, ع); a single fixed value would be
+# wrong, not just imprecise. `merges_with` lists other letters that are
+# distinct in Arabic but identical in Persian pronunciation — the actual
+# motivation for this whole project.
+
+letters:
+  ا: { name: "alef", ipa: ["ɒː"], notes: "glottal-stop carrier word-initially" }
+  آ: { name: "alef-ye maddeh", ipa: ["ɒː"], notes: "used word-initially where bare ا is ambiguous" }
+  ب: { name: "be", ipa: ["b"] }
+  پ: { name: "pe", ipa: ["p"] }
+  ت: { name: "te", ipa: ["t"], merges_with: ["ط"] }
+  ث: { name: "se", ipa: ["s"], merges_with: ["س", "ص"] }
+  ج: { name: "jim", ipa: ["dʒ"] }
+  چ: { name: "che", ipa: ["tʃ"] }
+  ح: { name: "he-ye jimi", ipa: ["h"], merges_with: ["ه"] }
+  خ: { name: "khe", ipa: ["x"] }
+  د: { name: "dâl", ipa: ["d"] }
+  ذ: { name: "zâl", ipa: ["z"], merges_with: ["ز", "ض", "ظ"] }
+  ر: { name: "re", ipa: ["ɾ"] }
+  ز: { name: "ze", ipa: ["z"], merges_with: ["ذ", "ض", "ظ"] }
+  ژ: { name: "zhe", ipa: ["ʒ"] }
+  س: { name: "sin", ipa: ["s"], merges_with: ["ث", "ص"] }
+  ش: { name: "shin", ipa: ["ʃ"] }
+  ص: { name: "sâd", ipa: ["s"], merges_with: ["ث", "س"] }
+  ض: { name: "zâd", ipa: ["z"], merges_with: ["ذ", "ز", "ظ"] }
+  ط: { name: "tâ", ipa: ["t"], merges_with: ["ت"] }
+  ظ: { name: "zâ", ipa: ["z"], merges_with: ["ذ", "ز", "ض"] }
+  ع: { name: "eyn", ipa: ["ʔ", "æ", "ɒ"], notes: "glottal stop or plain vowel depending on position; no pharyngeal value as in Arabic" }
+  غ: { name: "gheyn", ipa: ["ɣ"], notes: "merges with ق as [ɣ~ɢ] in colloquial Tehrani speech" }
+  ف: { name: "fe", ipa: ["f"] }
+  ق: { name: "qâf", ipa: ["q"], notes: "merges with غ as [ɣ~ɢ] in colloquial Tehrani speech" }
+  ک: { name: "kaf", ipa: ["k"] }
+  گ: { name: "gaf", ipa: ["ɡ"] }
+  ل: { name: "lam", ipa: ["l"] }
+  م: { name: "mim", ipa: ["m"] }
+  ن: { name: "nun", ipa: ["n"] }
+  و: { name: "vav", ipa: ["v", "uː", "ow", "o"], notes: "multi-valued: /v/ consonant-initial, /uː/ long vowel, /ow/~/o/ word-final/diphthong" }
+  ه: { name: "he-ye do-cheshm", ipa: ["h", "e", "a"], merges_with: ["ح"], notes: "/h/ generally; sometimes /e/ or /a/ word-finally" }
+  ی: { name: "ye", ipa: ["j", "iː", "ej"], notes: "multi-valued: /j/ consonant, /iː/ long vowel, /ej/ in some word-final contexts" }
+
+diacritics:
+  ء: { name: "hamze", ipa: ["ʔ"], notes: "not a base letter; seats on ا/و/ی" }
+  "َ": { name: "zabar (fathe)", ipa: ["æ"] }
+  "ِ": { name: "zir (kasre)", ipa: ["e"] }
+  "ُ": { name: "pish (zamme)", ipa: ["o"] }
+  "ّ": { name: "tashdid", ipa: [], notes: "not a sound — geminates (doubles) the consonant it sits on" }
+  "ْ": { name: "sukun", ipa: [], notes: "marks absence of a vowel after the consonant" }
+  "ً": { name: "tanvine nasb (fathatan)", ipa: ["æn"], notes: "Arabic-loan adverbs, e.g. فوراً = /foræn/" }
+  "ٍ": { name: "tanvine jarr (kasratan)", ipa: [], notes: "essentially unused in native Persian" }
+  "ٌ": { name: "tanvine rafʿ (dammatan)", ipa: [], notes: "rare, essentially unused in everyday Persian" }
+
+vowel_inventory:
+  short: ["æ", "e", "o"]
+  long: ["ɒː", "iː", "uː"]
