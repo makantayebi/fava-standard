@@ -13,13 +13,20 @@ letters:
     name: "alef"
     notes: >
       Not one fixed sound — position decides it, and this is exactly why
-      آ exists (see below). Word-initial: just a glottal stop /ʔ/; the
-      vowel that follows is lexical (whatever short vowel the word
-      actually has — از is /æz/, اگر is /ægær/, این is /in/ — not a
-      property of the alef itself). Word-medial/final: reliably /ɒː/,
-      no glottal-stop component, e.g. the ا in کتاب.
+      آ exists (see below). Word-medial/final: reliably /ɒː/, no glottal
+      stop, e.g. the ا in کتاب. Word-initial: always a glottal stop /ʔ/
+      onset, but the vowel after it is lexical — it can be any one of
+      Persian's three short vowels, with no way to tell which one from
+      the spelling alone. That's the actual ambiguity this project is
+      about.
     by_position:
-      initial: { ipa: ["ʔ"] }
+      initial:
+        onset: "ʔ"
+        vowel: ["æ", "e", "o"]   # the same three short vowels as فتحه/کسره/ضمه — just unwritten here
+        examples:
+          æ: "اگر (agar, 'if')"
+          e: "اسم (esm, 'name')"
+          o: "اریب (orib, 'oblique') — commonly misread as 'arib'; the initial vowel is /o/, not /æ/"
       medial_final: { ipa: ["ɒː"] }
   آ:
     name: "alef-ye maddeh"
@@ -29,7 +36,13 @@ letters:
       precisely because bare ا word-initially does *not* reliably mean
       ɒː (see ا above). آب, آمدن, آهسته all start this way; a native
       Persian word starting with the long ɒː sound is essentially
-      always spelled with آ, never bare ا.
+      always spelled with آ, never bare ا. /ɒː/ is the open BACK ROUNDED
+      vowel — closer to the vowel in English "raw"/"paw", or Swedish/
+      Norwegian/Danish Å, than to the unrounded "ah" of English
+      "father". Confirmed against Persian phonology literature, which
+      also notes some speakers realize it with only slight rounding,
+      closer to [ɑː] — the symbol doesn't change, but "rounded, not
+      father-ah" is the useful calibration.
   ب: { name: "be", ipa: ["b"] }
   پ: { name: "pe", ipa: ["p"] }
   ت: { name: "te", ipa: ["t"], merges_with: ["ط"] }

@@ -40,8 +40,8 @@ position-dependent story.
 
 | Letter | Name | Persian IPA | Arabic IPA (for contrast) | Notes |
 |---|---|---|---|---|
-| ا | الف (alef) | **word-initial:** /ʔ/ only — the vowel that follows is lexical and usually *short* (از /æz/, اگر /ægær/, این /in/), not a property of the letter. **medial/final:** /ɒː/, reliably, no glottal stop | /ʔ/, /aː/ | not one fixed sound — see آ |
-| آ | الف مد (alef-ye maddeh) | /ʔɒː/ (glottal stop + long ɒː, fused) | /ʔaː/ | the word-initial spelling for long ɒː specifically — exists because bare ا word-initially does *not* reliably mean ɒː |
+| ا | الف (alef) | **word-initial:** /ʔ/ onset + one of the three short vowels, lexically determined — /ʔæ/ (اگر, "agar"), /ʔe/ (اسم, "esm"), or /ʔo/ (اریب, "orib" — commonly misread "arib", the vowel is /o/ not /æ/). **medial/final:** /ɒː/, reliably, no glottal stop | /ʔ/, /aː/ | three different short vowels can hide behind the same bare letter — see آ for the one case that *isn't* ambiguous |
+| آ | الف مد (alef-ye maddeh) | /ʔɒː/ (glottal stop + long ɒː, fused) — open **back, rounded**, closer to English "raw"/"paw" or Scandinavian Å than to the unrounded "ah" of "father" | /ʔaː/ | the word-initial spelling for long ɒː specifically — exists because bare ا word-initially does *not* reliably mean ɒː |
 | ب | be | /b/ | /b/ | |
 | پ | pe | /p/ | — | not an Arabic letter |
 | ت | te | /t/ | /t/ | |
@@ -73,6 +73,22 @@ position-dependent story.
 | و | vav | **multi-valued**: /v/ (consonant, word-initial), /uː/ (long vowel), /ow/ or /o/ (word-final/diphthong) | /w/, /uː/ | context-dependent, no single value |
 | ه | he-ye do-cheshm | /h/; word-finally sometimes /e/ or /a/ | /h/ | |
 | ی | ye | **multi-valued**: /j/ (consonant), /iː/ (long vowel), /ej/ (some word-final contexts) | /j/, /iː/ | |
+
+### Bare ا is the clearest case of the problem this project exists to fix
+
+Word-initial `ا` can open a word as any of Persian's three short vowels,
+and the spelling gives no clue which:
+
+| word | reads as | short vowel |
+|---|---|---|
+| اگر | agar ("if") | /æ/ |
+| اسم | esm ("name") | /e/ |
+| اریب | orib ("oblique") — often misread "arib" | /o/ |
+
+All three are spelled with the same bare `ا` and no diacritic. `آ` is
+the *one* case Persian orthography already disambiguates — it exists
+specifically to mark "this is long /ɒː/, not a short vowel" at the
+start of a word. Every other bare-`ا` word is still this ambiguous.
 
 Not one of the 32 "letters" but structurally similar — a diacritic, not a
 base letter:
