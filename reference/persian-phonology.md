@@ -31,12 +31,17 @@ for ی specifically (one source gave it an IPA value that didn't check out
 against the others, so it was dropped rather than included on one
 source's word — see `persian-phonemes.yaml` notes on `ی`).
 
+**Correction:** an earlier version of this table gave ا and آ the same
+single value, /ɒː/. That's wrong for ا — see its row below and
+`persian-phonemes.yaml`'s `by_position` field for the actual,
+position-dependent story.
+
 ## The 32 letters
 
 | Letter | Name | Persian IPA | Arabic IPA (for contrast) | Notes |
 |---|---|---|---|---|
-| ا | الف (alef) | /ɒː/ (medial/final); glottal-stop carrier word-initially | /ʔ/, /aː/ | |
-| آ | الف مد (alef-ye maddeh) | /ɒː/ | /ʔaː/ | used word-initially where bare ا would be ambiguous |
+| ا | الف (alef) | **word-initial:** /ʔ/ only — the vowel that follows is lexical and usually *short* (از /æz/, اگر /ægær/, این /in/), not a property of the letter. **medial/final:** /ɒː/, reliably, no glottal stop | /ʔ/, /aː/ | not one fixed sound — see آ |
+| آ | الف مد (alef-ye maddeh) | /ʔɒː/ (glottal stop + long ɒː, fused) | /ʔaː/ | the word-initial spelling for long ɒː specifically — exists because bare ا word-initially does *not* reliably mean ɒː |
 | ب | be | /b/ | /b/ | |
 | پ | pe | /p/ | — | not an Arabic letter |
 | ت | te | /t/ | /t/ | |

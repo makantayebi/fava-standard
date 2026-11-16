@@ -9,8 +9,27 @@
 # motivation for this whole project.
 
 letters:
-  ا: { name: "alef", ipa: ["ɒː"], notes: "glottal-stop carrier word-initially" }
-  آ: { name: "alef-ye maddeh", ipa: ["ɒː"], notes: "used word-initially where bare ا is ambiguous" }
+  ا:
+    name: "alef"
+    notes: >
+      Not one fixed sound — position decides it, and this is exactly why
+      آ exists (see below). Word-initial: just a glottal stop /ʔ/; the
+      vowel that follows is lexical (whatever short vowel the word
+      actually has — از is /æz/, اگر is /ægær/, این is /in/ — not a
+      property of the alef itself). Word-medial/final: reliably /ɒː/,
+      no glottal-stop component, e.g. the ا in کتاب.
+    by_position:
+      initial: { ipa: ["ʔ"] }
+      medial_final: { ipa: ["ɒː"] }
+  آ:
+    name: "alef-ye maddeh"
+    ipa: ["ʔɒː"]
+    notes: >
+      The word-initial spelling for /ʔ/ + long /ɒː/ specifically — used
+      precisely because bare ا word-initially does *not* reliably mean
+      ɒː (see ا above). آب, آمدن, آهسته all start this way; a native
+      Persian word starting with the long ɒː sound is essentially
+      always spelled with آ, never bare ا.
   ب: { name: "be", ipa: ["b"] }
   پ: { name: "pe", ipa: ["p"] }
   ت: { name: "te", ipa: ["t"], merges_with: ["ط"] }
