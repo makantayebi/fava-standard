@@ -1,4 +1,4 @@
-// Generated from fava-doc versions/1.0.0/layout.yaml
+// Generated from fava-standard versions/1.0.0/layout.yaml
 // Do not hand-edit — change layout.yaml and re-run tools/render.py instead.
 partial alphanumeric_keys
 xkb_symbols "avayi" {
@@ -53,4 +53,7 @@ xkb_symbols "avayi" {
     // AB08: multi-codepoint value, no single keysym — skipped
     key <AB09> { [ period, period ] };
     key <AB10> { [ slash, Arabic_question_mark ] };
+    key <LSGT> { [ EuroSign, section ] };
+    key <KPDL> { [ period, period ] };
+    key <SPCE> { [ space, space ] };
 };

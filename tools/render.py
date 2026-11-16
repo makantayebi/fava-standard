@@ -96,7 +96,7 @@ def keysym_for(cp):
 # --- xkb_symbols generation ---
 def render_xkb(layout):
     lines = [
-        f'// Generated from fava-doc versions/{layout["version"]}/layout.yaml',
+        f'// Generated from fava-standard versions/{layout["version"]}/layout.yaml',
         "// Do not hand-edit — change layout.yaml and re-run tools/render.py instead.",
         "partial alphanumeric_keys",
         'xkb_symbols "avayi" {',

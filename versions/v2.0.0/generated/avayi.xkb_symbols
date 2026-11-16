@@ -1,4 +1,4 @@
-// Generated from fava-doc versions/2.0.0/layout.yaml
+// Generated from fava-standard versions/2.0.0/layout.yaml
 // Do not hand-edit — change layout.yaml and re-run tools/render.py instead.
 partial alphanumeric_keys
 xkb_symbols "avayi" {

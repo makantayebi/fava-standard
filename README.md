@@ -1,4 +1,4 @@
-# fava-doc
+# fava-standard
 
 The source of truth for the **Fava** Persian keyboard layout.
 
