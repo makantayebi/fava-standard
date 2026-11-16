@@ -70,6 +70,15 @@ unbuilt future work (see `versions/v2.0.0/notes.md`, "Known gaps").
 
 ## Reference material
 
-`reference/` holds the original design documents (`.docx`) that predate
-this repo's `layout.yaml`/versioning structure. They're kept for
-historical context, not treated as authoritative — `layout.yaml` is.
+- [`linguistic-basis.md`](reference/linguistic-basis.md) — what kind of
+  project this is in actual linguistic terms (an *orthographic reform*
+  targeting Persian's *impure abjad* vowel gap), and the closest
+  real-world precedent (Sorani Kurdish). Start here if you want the
+  academic grounding for the movement.
+- [`persian-phonology.md`](reference/persian-phonology.md) /
+  [`persian-phonemes.yaml`](reference/persian-phonemes.yaml) — every
+  letter and diacritic's actual Persian pronunciation (not Arabic),
+  sourced and cross-checked. Input to future `layout.yaml` decisions,
+  not itself a Fava spelling definition.
+- The two `.docx` files predate this repo's structure entirely; kept for
+  historical context, not treated as authoritative.
