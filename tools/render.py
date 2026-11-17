@@ -77,6 +77,8 @@ COMPOSE_TRIGGER = {
     ("AD01", "shift"): 0xF103,  # Q shift -> اُ
     ("AD02", "shift"): 0xF102,  # W shift -> اِ
     ("AD03", "shift"): 0xF101,  # E shift -> اَ
+    ("AB05", "base"): 0xF104,   # B base  -> وْ (v0.0.5)
+    ("AB05", "shift"): 0xF104,  # shift omitted = same as base; same trigger, not a separate rule
 }
 
 

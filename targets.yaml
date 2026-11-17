@@ -1,0 +1,29 @@
+# Tracks which SCRIPT_VERSION each real-world keyboard target currently
+# implements. "Target" = one platform + physical-keyboard combination —
+# Windows on an ANSI (US) keyboard is a different target from Windows on
+# an ISO (EU) keyboard, because the physical key layout genuinely differs
+# (ISO has an extra key, a taller Enter, and a shifted \ position).
+#
+# script_version here is "what that target's repo has actually caught up
+# to," not necessarily the latest SCRIPT_VERSION — a target can lag.
+# See TODO.md for targets with no implementation at all yet.
+
+targets:
+  ubuntu-us-ansi:
+    status: implemented
+    repo: ubuntu-keyboard
+    script_version: "0.0.5"
+    note: >
+      XKB's own keyboard geometry already abstracts ANSI-vs-ISO physical
+      key placement for the same symbols file — this is the only Linux
+      target that likely needs to exist at all. See TODO.md's
+      ubuntu-eu-iso entry.
+
+  android:
+    status: implemented
+    repo: fava-android-keyboard
+    script_version: "0.0.5"
+    note: >
+      One layout serves all physical differences — Android IMEs render
+      their own on-screen keyboard, independent of any physical keyboard
+      or regional variant.

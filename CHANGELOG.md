@@ -3,6 +3,15 @@
 All notable changes to the Fava layout. Each entry links to the full
 writeup in that version's `notes.md`.
 
+## v0.0.5 — 2026-11-18
+
+- B now types **وْ** directly — one keystroke, two codepoints — instead
+  of requiring `,` (و) then B (سکون) as two separate presses. Same
+  disambiguation from `v0.0.4`, just collapsed into one key. Uses the
+  same Compose mechanism `v0.0.3` built for shift+Q/W/E, extended to a
+  new trigger. See
+  [`versions/v0.0.5/notes.md`](versions/v0.0.5/notes.md).
+
 ## v0.0.4 — 2026-11-17
 
 - Split و's two unrelated sounds (consonant /v/ vs. vowel /uː/): bare و

@@ -56,7 +56,7 @@ declared deliberately, and *from that point on*:
 - **minor** — new keys/behavior added without changing existing ones.
 - **patch** — a correction to documentation/metadata, no behavior change.
 
-There are four versions so far. `v0.0.1` is the original Windows design;
+There are five versions so far. `v0.0.1` is the original Windows design;
 `v0.0.2` is a substantial reassignment of several keys developed while
 building the Ubuntu port — see `versions/v0.0.2/notes.md`, which also
 documents an unintentional Y/Z mixup discovered along the way. `v0.0.3`
@@ -65,8 +65,30 @@ Compose rather than a plain key binding — see `versions/v0.0.3/notes.md`
 for the mechanism. `v0.0.4` splits و's consonant/vowel ambiguity by
 repurposing سکون, assigned to the key freed in `v0.0.3` — see
 `versions/v0.0.4/notes.md` for why several other options were rejected
-first. Read `v0.0.2`'s notes first if you want the full, slightly
+first. `v0.0.5` collapses that into one keystroke: B now types وْ
+directly. Read `v0.0.2`'s notes first if you want the full, slightly
 messy, honest history behind where things currently stand.
+
+## Script version vs. target version
+
+This repo tracks two different things that can change independently:
+
+- **Script version** (`SCRIPT_VERSION`) — the abstract Fava design: which
+  marks exist, what each one means, the Q/W/E rotation, the وْ
+  convention, etc. This is what `versions/vX.Y.Z/layout.yaml` actually
+  defines, same as always.
+- **Target version** (`targets.yaml`) — for each real keyboard (a
+  specific platform + physical layout combination), which script
+  version that target's own repo has actually caught up to implementing.
+  A target can lag behind the latest script version if nobody's
+  propagated the change into that platform yet.
+
+Right now these are all numerically identical (every implemented target
+tracks the latest script version) simply because nothing has had a
+chance to diverge yet — the distinction matters once a target-specific
+fix ships without a script change, or a script change doesn't get
+propagated to every target immediately. See `targets.yaml` for current
+status per target, and `TODO.md` for targets that don't exist yet.
 
 ## Using `tools/render.py`
 
