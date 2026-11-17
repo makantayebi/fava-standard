@@ -317,7 +317,16 @@ SINGLE_WIDTH = PAD * 2 + BOARD_W
 
 
 # --- Android keyboard-XML generation (android.inputmethodservice.Keyboard format) ---
-ANDROID_KEY_LABEL = {"‌": "ZWNJ", "‍": "ZWJ"}  # short, unlike the diagram's verbose placeholder — a phone keycap has no room for that
+ANDROID_KEY_LABEL = {"‌": "نیم‌فاصله", "‍": "ZWJ"}  # نیم‌فاصله is the real, established Persian term for ZWNJ; no
+# equivalent common Persian term for ZWJ is established, and it's not
+# currently reachable from any key anyway, so it's left in Latin rather
+# than inventing one.
+
+# Keys this particular target chooses not to surface — a phone touchscreen
+# doesn't need the rarely-used {}\ cluster taking up row-2 space the way a
+# physical keyboard's dedicated keys do. The underlying script/layout.yaml
+# still defines them; this is an Android-rendering choice only.
+ANDROID_HIDE_KEYS = {"AD11", "AD12", "BKSL"}
 
 
 def xml_escape(s):
@@ -341,10 +350,13 @@ def render_android_keyboard(layout, shifted, with_function_row=True):
     ]
     code = 1000
     for row in ROWS:
-        n = len(row)
+        visible = [(lbl, key) for lbl, key in row if key not in ANDROID_HIDE_KEYS]
+        if not visible:
+            continue
+        n = len(visible)
         width = round(100 / n, 3)
         lines.append(f'    <Row android:keyWidth="{width}%p">')
-        for _label, key in row:
+        for _label, key in visible:
             spec = layout["keys"].get(key) or {}
             level = spec.get("shift") if shifted else spec.get("base")
             if level is None:
@@ -365,7 +377,9 @@ def render_android_keyboard(layout, shifted, with_function_row=True):
 
     if with_function_row:
         lines.append('    <Row android:keyWidth="14%p" android:rowEdgeFlags="bottom">')
-        lines.append('        <Key android:codes="-1" android:keyLabel="⇧" android:isModifier="true" android:isSticky="true" android:keyWidth="14%p" />')
+        # momentary shift (one character, then reverts) is handled in Kotlin;
+        # isSticky is deliberately omitted — that's a lock-style flag we don't want
+        lines.append('        <Key android:codes="-1" android:keyLabel="⇧" android:isModifier="true" android:keyWidth="14%p" />')
         lines.append(f'        <Key android:codes="{code+1}" android:keyLabel="{xml_escape(chars_for(cp_list(layout["keys"]["SPCE"]["base"])) or " ")}" android:keyOutputText=" " android:keyWidth="58%p" android:isRepeatable="true" />')
         lines.append('        <Key android:codes="-5" android:keyIcon="@android:drawable/ic_input_delete" android:keyWidth="14%p" android:isRepeatable="true" />')
         lines.append('        <Key android:codes="10" android:keyLabel="⏎" android:keyWidth="14%p" />')
