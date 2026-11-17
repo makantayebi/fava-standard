@@ -69,16 +69,49 @@ keys:
   output" (CapsLock also has no effect, matching the layout's
   shift-lock-across-everything behavior — see `README.md`).
 - A value may be a **list** of codepoints instead of one, for a key that
-  historically emitted more than one character per press (only used in
-  `v0.0.1`, to record Windows' literal "space + combining mark" ligature
-  keys — a platform-specific padding trick later versions don't need,
-  since modern text shaping attaches a bare combining mark to the
-  previous glyph on its own). Example:
+  emits more than one character per press. Two distinct reasons this
+  shows up, handled differently downstream:
+  - `v0.0.1`-style **ligature padding**: Windows' literal "space +
+    combining mark" workaround, a platform limitation, not a design
+    choice. `tools/render.py` can't turn this into a real key binding
+    (no single keysym exists for it) and just records it for history.
+  - `v0.0.3`-onward **intentional multi-character output**, e.g.
+    shift+E typing اَ (ا + fatha) in one keystroke. These *are*
+    implementable, via a single-keysym Compose rule rather than a
+    normal key binding — see "Multi-character keys" below. Whether a
+    given multi-codepoint value is implementable this way depends on
+    whether it has an entry in `tools/render.py`'s `COMPOSE_TRIGGER`
+    table; add one when you add the key.
 
   ```yaml
-  AD01:                          # Q, in v0.0.1 only
-    base: ["U+0020", "U+064E"]   # SPACE + ARABIC FATHA
+  AD01:                                      # Q
+    base: "U+064F"                           # ARABIC DAMMA — one keysym, normal key
+    shift: ["U+0627", "U+064F"]               # ا + DAMMA — two codepoints, via Compose
   ```
+
+- `base: null` means the key is deliberately unassigned — reserved for
+  a future decision, not "unchanged from the previous version." A key
+  *absent* from `keys:` means unchanged; a key present with `base: null`
+  means explicitly freed.
+
+## Multi-character keys (Compose, not a dead key)
+
+A keysym is always exactly one character — XKB has no way to bind one
+key+shift-level to two codepoints directly. Instead, that key's shift
+level is bound to a dedicated Private Use Area (PUA) keysym that's
+never meant to be seen on its own, and a matching **Compose** rule maps
+that single keysym straight to the real multi-character string. This
+was verified empirically (not just assumed) before relying on it: X11
+Compose files resolve a single keysym to a full string immediately,
+no second keypress needed, same mechanism dead keys use but triggered
+by one keysym instead of two.
+
+`tools/render.py`'s `COMPOSE_TRIGGER` dict assigns each such key's PUA
+codepoint (`AD01`→`UF103`, `AD02`→`UF102`, `AD03`→`UF101` so far — pick
+any unused PUA codepoint when adding more, just don't reuse one). The
+tool then emits both `avayi.xkb_symbols` (binding the trigger) and
+`avayi.XCompose` (mapping it to the string) from the same `layout.yaml`
+— they have to be installed together for the key to actually work.
 
 ## Rendering a version
 

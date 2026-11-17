@@ -14,6 +14,7 @@ layout.yaml is the only input; nothing here is hand-edited.
 import argparse
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 import yaml
@@ -38,7 +39,7 @@ PAD = 40
 
 ARABIC_FONTS = "'Noto Sans Arabic','Noto Naskh Arabic','DejaVu Sans',Tahoma,Arial,sans-serif"
 LATIN_FONTS = "'DejaVu Sans',Tahoma,Arial,sans-serif"
-PLACEHOLDER = {"‌": "ZWNJ", "‍": "ZWJ", " ": "_"}
+PLACEHOLDER = {"‌": "نیم‌فآسِلِ", "‍": "ZWJ", " ": "_"}
 
 # codepoint -> preferred XKB keysym name, for the handful this project actually uses.
 # anything not listed here falls back to the portable "U<hex>" keysym syntax.
@@ -65,6 +66,17 @@ CODEPOINT_KEYSYM = {
     0x061B: "Arabic_semicolon", 0x0698: "Arabic_jeh", 0x0632: "Arabic_zain",
     0x0631: "Arabic_ra", 0x062F: "Arabic_dal", 0x067E: "Arabic_peh",
     0x0648: "Arabic_waw", 0x061F: "Arabic_question_mark",
+}
+
+# (key, "base"|"shift") -> a Private Use Area codepoint used purely as a
+# Compose trigger (never meant to be seen on its own) for keys whose value
+# is more than one codepoint. See schema/layout.schema.md, "Multi-character
+# keys". Pick any unused PUA codepoint (U+E000-U+F8FF) when adding more;
+# just don't reuse one already listed here.
+COMPOSE_TRIGGER = {
+    ("AD01", "shift"): 0xF103,  # Q shift -> اُ
+    ("AD02", "shift"): 0xF102,  # W shift -> اِ
+    ("AD03", "shift"): 0xF101,  # E shift -> اَ
 }
 
 
@@ -115,15 +127,52 @@ def render_xkb(layout):
             continue
         base_cps = cp_list(spec.get("base"))
         shift_cps = cp_list(spec.get("shift")) or base_cps
-        if len(base_cps) > 1 or len(shift_cps) > 1:
-            # a multi-codepoint ligature (v0.0.1-style) has no single XKB keysym;
-            # skip it here and note it, rather than emit something misleading.
-            lines.append(f"    // {key}: multi-codepoint value, no single keysym — skipped")
-            continue
-        base_sym = keysym_for(base_cps[0]) if base_cps else "NoSymbol"
-        shift_sym = keysym_for(shift_cps[0]) if shift_cps else base_sym
+
+        def level_sym(cps, level_name, fallback):
+            if len(cps) > 1:
+                trigger = COMPOSE_TRIGGER.get((key, level_name))
+                if trigger:
+                    return f"U{trigger:04X}"  # PUA trigger; see avayi.XCompose for what it composes to
+                lines.append(f"    // {key} {level_name}: multi-codepoint, no compose trigger registered — skipped")
+                return fallback
+            if cps:
+                return keysym_for(cps[0])
+            return fallback
+
+        base_sym = level_sym(base_cps, "base", "NoSymbol")
+        shift_sym = level_sym(shift_cps, "shift", base_sym)
         lines.append(f"    key <{key}> {{ [ {base_sym}, {shift_sym} ] }};")
     lines.append("};")
+    return "\n".join(lines) + "\n"
+
+
+# --- Compose-file generation, for the multi-character keys avayi.xkb_symbols can't express directly ---
+def render_compose(layout):
+    lines = [
+        f'# Generated from fava-standard versions/{layout["version"]}/layout.yaml',
+        "# Do not hand-edit — change layout.yaml and re-run tools/render.py instead.",
+        "#",
+        '# Install: append to ~/.XCompose (keep an existing `include "%L"` line',
+        "# first, if you have one). ubuntu-keyboard/install.sh does this for you.",
+        "",
+    ]
+    wrote_any = False
+    for key, spec in layout["keys"].items():
+        if not spec:
+            continue
+        for level_name in ("base", "shift"):
+            cps = cp_list(spec.get(level_name))
+            if level_name == "shift" and not cps:
+                continue  # omitted shift = same as base, not a distinct rule to compose
+            if len(cps) <= 1:
+                continue
+            trigger = COMPOSE_TRIGGER.get((key, level_name))
+            if not trigger:
+                continue
+            lines.append(f'<U{trigger:04X}> : "{chars_for(cps)}"  # {key} {level_name}')
+            wrote_any = True
+    if not wrote_any:
+        lines.append("# (no multi-character keys in this version)")
     return "\n".join(lines) + "\n"
 
 
@@ -161,6 +210,30 @@ def display_text(s):
     return PLACEHOLDER.get(s, s)
 
 
+def visual_width(text):
+    """Count only glyphs that actually take horizontal space — combining
+    marks and zero-width joiners ride on the previous glyph for free."""
+    return sum(1 for c in text if unicodedata.combining(c) == 0 and c not in ("‌", "‍"))
+
+
+def fit_font_size(text, max_px, cap_size, min_size=6):
+    width = visual_width(text)
+    if width <= 1:
+        return cap_size
+    size = max_px / (width * 1.05)
+    return max(min_size, min(cap_size, round(size)))
+
+
+def wrap_label(text):
+    """A placeholder label (e.g. the Persian name for ZWNJ) that's too long
+    for one line breaks at its own embedded ZWNJ/ZWJ, if it has one —
+    that's already the natural word boundary in the label itself."""
+    for i, c in enumerate(text):
+        if c in ("‌", "‍") and 0 < i < len(text) - 1:
+            return [text[:i], text[i + 1:]]
+    return [text]
+
+
 def render_keyboard_svg(x0, y0, layout):
     title = f'{layout["version"]} — {layout["name"]}'
     parts = [f'<text x="{x0}" y="{y0 - 18}" font-size="16" font-weight="600" '
@@ -176,8 +249,27 @@ def render_keyboard_svg(x0, y0, layout):
             if spec.get("shift") is None:
                 hi = ""  # "omitted = same as base" is a *data* convention, not a display one
             lo_disp, hi_disp = display_text(lo), display_text(hi)
-            lo_size = 10 if lo_disp != lo else 20
-            hi_size = 9 if hi_disp != hi else 18
+            hi_size = fit_font_size(hi_disp, KEY_W - 14, 9) if hi_disp != hi else 18
+
+            if lo_disp != lo:
+                lo_lines = wrap_label(lo_disp)
+                lo_size = fit_font_size(max(lo_lines, key=visual_width), KEY_W - 14, 10)
+            else:
+                lo_lines, lo_size = [lo_disp], 20
+
+            if len(lo_lines) == 2:
+                lo_text_svg = (
+                    f'<text x="{x+KEY_W-10}" y="{y+KEY_H-24}" font-size="{lo_size}" fill="#f0f0f0" '
+                    f'text-anchor="end">{tspans(lo_lines[0])}</text>'
+                    f'<text x="{x+KEY_W-10}" y="{y+KEY_H-10}" font-size="{lo_size}" fill="#f0f0f0" '
+                    f'text-anchor="end">{tspans(lo_lines[1])}</text>'
+                )
+            else:
+                lo_text_svg = (
+                    f'<text x="{x+KEY_W-10}" y="{y+KEY_H-12}" font-size="{lo_size}" fill="#f0f0f0" '
+                    f'text-anchor="end">{tspans(lo_lines[0])}</text>'
+                )
+
             parts.append(
                 f'<g><rect x="{x}" y="{y}" width="{KEY_W}" height="{KEY_H}" rx="8" '
                 f'fill="#2b2b2b" stroke="#555" stroke-width="1.5"/>'
@@ -185,8 +277,7 @@ def render_keyboard_svg(x0, y0, layout):
                 f'font-family="sans-serif">{svg_escape(label)}</text>'
                 f'<text x="{x+KEY_W-10}" y="{y+22}" font-size="{hi_size}" fill="#7fd1ff" '
                 f'text-anchor="end">{tspans(hi_disp)}</text>'
-                f'<text x="{x+KEY_W-10}" y="{y+KEY_H-12}" font-size="{lo_size}" fill="#f0f0f0" '
-                f'text-anchor="end">{tspans(lo_disp)}</text></g>'
+                f'{lo_text_svg}</g>'
             )
     bottom = y0 + len(ROWS) * (KEY_H + GAP)
     return "\n".join(parts), bottom
@@ -218,7 +309,7 @@ def wrap_svg(fragments, width, content_height, caption):
 
 
 CAPTION = ('top-right glyph = shift level, bottom-right = base level, "_" = literal space, '
-           "ZWNJ/ZWJ = zero-width joiner marks (no visible glyph)")
+           "نیم‌فآسِلِ/ZWJ = zero-width joiner marks (no visible glyph of their own)")
 BOARD_W = int(13 * (KEY_W + GAP) + 60)
 SINGLE_WIDTH = PAD * 2 + BOARD_W
 
@@ -237,6 +328,10 @@ def main():
     xkb_text = render_xkb(layout)
     (out_dir / "avayi.xkb_symbols").write_text(xkb_text, encoding="utf-8")
     print(f"wrote {out_dir / 'avayi.xkb_symbols'}")
+
+    compose_text = render_compose(layout)
+    (out_dir / "avayi.XCompose").write_text(compose_text, encoding="utf-8")
+    print(f"wrote {out_dir / 'avayi.XCompose'}")
 
     board_svg, bottom = render_keyboard_svg(PAD, 60, layout)
     svg = wrap_svg([board_svg], SINGLE_WIDTH, bottom + 10, CAPTION)

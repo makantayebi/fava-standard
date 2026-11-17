@@ -56,11 +56,14 @@ declared deliberately, and *from that point on*:
 - **minor** — new keys/behavior added without changing existing ones.
 - **patch** — a correction to documentation/metadata, no behavior change.
 
-There are two versions so far. `v0.0.1` is the original Windows design;
+There are three versions so far. `v0.0.1` is the original Windows design;
 `v0.0.2` is a substantial reassignment of several keys developed while
 building the Ubuntu port — see `versions/v0.0.2/notes.md`, which also
-documents an unintentional Y/Z mixup discovered along the way. Read that
-one first if you want the full, slightly messy, honest history.
+documents an unintentional Y/Z mixup discovered along the way. `v0.0.3`
+adds shift+Q/W/E as one-keystroke disambiguated vowels, implemented via
+Compose rather than a plain key binding — see `versions/v0.0.3/notes.md`
+for the mechanism. Read `v0.0.2`'s notes first if you want the full,
+slightly messy, honest history behind where things currently stand.
 
 ## Using `tools/render.py`
 

@@ -3,6 +3,18 @@
 All notable changes to the Fava layout. Each entry links to the full
 writeup in that version's `notes.md`.
 
+## v0.0.3 — 2026-11-17
+
+- Shift+Q/W/E now type the disambiguated word-initial short vowel
+  (ا + the mark — اُ/اِ/اَ) in one keystroke, directly addressing the
+  bare-ا ambiguity in [`persian-phonology.md`](reference/persian-phonology.md).
+  Implemented via a single-keysym Compose rule, not a dead key — see
+  [`versions/v0.0.3/notes.md`](versions/v0.0.3/notes.md) for how, and
+  why a normal `.xkb_symbols` key binding can't do this directly.
+- Shift+J's tatweel dropped — unneeded.
+- ژ freed from B (X keeps it alone); B is now explicitly unassigned
+  (`base: null`), reserved for a future decision.
+
 ## v0.0.2 — 2026-11-16
 
 Developed while building the Ubuntu/Linux implementation and a
