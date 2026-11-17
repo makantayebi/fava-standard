@@ -3,7 +3,7 @@
 Each `versions/<version>/layout.yaml` is a complete, standalone, physical
 key-by-key definition of the Fava layout at that version. It is the
 *only* authoritative place that defines what Fava is — every platform
-repo (`windows-keyboard`, `ubuntu-keyboard`, `android-keyboard`,
+repo (`windows-keyboard`, `ubuntu-keyboard`, `fava-android-keyboard`,
 `ios-keyboard`) implements whatever the latest `layout.yaml` here says,
 not the other way around. If a platform file and `layout.yaml` disagree,
 `layout.yaml` is right and the platform file is stale.
