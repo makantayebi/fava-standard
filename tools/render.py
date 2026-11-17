@@ -314,6 +314,65 @@ BOARD_W = int(13 * (KEY_W + GAP) + 60)
 SINGLE_WIDTH = PAD * 2 + BOARD_W
 
 
+# --- Android keyboard-XML generation (android.inputmethodservice.Keyboard format) ---
+ANDROID_KEY_LABEL = {"‌": "ZWNJ", "‍": "ZWJ"}  # short, unlike the diagram's verbose placeholder — a phone keycap has no room for that
+
+
+def xml_escape(s):
+    return (s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+             .replace('"', "&quot;"))
+
+
+def render_android_keyboard(layout, shifted, with_function_row=True):
+    """One android.inputmethodservice.Keyboard XML resource: either the
+    unshifted or the shifted page. Every character key uses
+    android:keyOutputText, so the IME only needs an onText() handler for
+    them — no per-key Kotlin logic, same spirit as letting layout.yaml be
+    the only hand-edited input everywhere else."""
+    lines = [
+        '<?xml version="1.0" encoding="utf-8"?>',
+        f'<!-- Generated from fava-standard versions/{layout["version"]}/layout.yaml ({"shifted" if shifted else "base"}) -->',
+        "<!-- Do not hand-edit — change layout.yaml and re-run tools/render.py instead. -->",
+        '<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"',
+        '    android:keyWidth="10%p" android:keyHeight="56dp"',
+        '    android:horizontalGap="2px" android:verticalGap="2px">',
+    ]
+    code = 1000
+    for row in ROWS:
+        n = len(row)
+        width = round(100 / n, 3)
+        lines.append(f'    <Row android:keyWidth="{width}%p">')
+        for _label, key in row:
+            spec = layout["keys"].get(key) or {}
+            level = spec.get("shift") if shifted else spec.get("base")
+            if level is None:
+                level = spec.get("base")  # shift omitted = same as base
+            cps = cp_list(level)
+            text = chars_for(cps) if cps else ""
+            # a phone keycap is too small for the diagram's full placeholder
+            # label (e.g. the Persian name for ZWNJ) — a short one here instead,
+            # distinct from android:keyOutputText, which still types the real character
+            label = ANDROID_KEY_LABEL.get(text, text)
+            code += 1
+            lines.append(
+                f'        <Key android:codes="{code}" '
+                f'android:keyLabel="{xml_escape(label)}" '
+                f'android:keyOutputText="{xml_escape(text)}" />'
+            )
+        lines.append("    </Row>")
+
+    if with_function_row:
+        lines.append('    <Row android:keyWidth="14%p" android:rowEdgeFlags="bottom">')
+        lines.append('        <Key android:codes="-1" android:keyLabel="⇧" android:isModifier="true" android:isSticky="true" android:keyWidth="14%p" />')
+        lines.append(f'        <Key android:codes="{code+1}" android:keyLabel="{xml_escape(chars_for(cp_list(layout["keys"]["SPCE"]["base"])) or " ")}" android:keyOutputText=" " android:keyWidth="58%p" android:isRepeatable="true" />')
+        lines.append('        <Key android:codes="-5" android:keyIcon="@android:drawable/ic_input_delete" android:keyWidth="14%p" android:isRepeatable="true" />')
+        lines.append('        <Key android:codes="10" android:keyLabel="⏎" android:keyWidth="14%p" />')
+        lines.append("    </Row>")
+
+    lines.append("</Keyboard>")
+    return "\n".join(lines) + "\n"
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("version", help="e.g. v0.0.2 (must match a versions/<name>/ folder)")
@@ -332,6 +391,11 @@ def main():
     compose_text = render_compose(layout)
     (out_dir / "avayi.XCompose").write_text(compose_text, encoding="utf-8")
     print(f"wrote {out_dir / 'avayi.XCompose'}")
+
+    (out_dir / "avayi_keys.xml").write_text(render_android_keyboard(layout, shifted=False), encoding="utf-8")
+    print(f"wrote {out_dir / 'avayi_keys.xml'}")
+    (out_dir / "avayi_keys_shifted.xml").write_text(render_android_keyboard(layout, shifted=True), encoding="utf-8")
+    print(f"wrote {out_dir / 'avayi_keys_shifted.xml'}")
 
     board_svg, bottom = render_keyboard_svg(PAD, 60, layout)
     svg = wrap_svg([board_svg], SINGLE_WIDTH, bottom + 10, CAPTION)

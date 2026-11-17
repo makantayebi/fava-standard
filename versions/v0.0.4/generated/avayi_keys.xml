@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generated from fava-standard versions/0.0.4/layout.yaml (base) -->
+<!-- Do not hand-edit — change layout.yaml and re-run tools/render.py instead. -->
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:keyWidth="10%p" android:keyHeight="56dp"
+    android:horizontalGap="2px" android:verticalGap="2px">
+    <Row android:keyWidth="7.692%p">
+        <Key android:codes="1001" android:keyLabel="÷" android:keyOutputText="÷" />
+        <Key android:codes="1002" android:keyLabel="۱" android:keyOutputText="۱" />
+        <Key android:codes="1003" android:keyLabel="۲" android:keyOutputText="۲" />
+        <Key android:codes="1004" android:keyLabel="۳" android:keyOutputText="۳" />
+        <Key android:codes="1005" android:keyLabel="۴" android:keyOutputText="۴" />
+        <Key android:codes="1006" android:keyLabel="۵" android:keyOutputText="۵" />
+        <Key android:codes="1007" android:keyLabel="۶" android:keyOutputText="۶" />
+        <Key android:codes="1008" android:keyLabel="۷" android:keyOutputText="۷" />
+        <Key android:codes="1009" android:keyLabel="۸" android:keyOutputText="۸" />
+        <Key android:codes="1010" android:keyLabel="۹" android:keyOutputText="۹" />
+        <Key android:codes="1011" android:keyLabel="۰" android:keyOutputText="۰" />
+        <Key android:codes="1012" android:keyLabel="-" android:keyOutputText="-" />
+        <Key android:codes="1013" android:keyLabel="=" android:keyOutputText="=" />
+    </Row>
+    <Row android:keyWidth="7.692%p">
+        <Key android:codes="1014" android:keyLabel="ُ" android:keyOutputText="ُ" />
+        <Key android:codes="1015" android:keyLabel="ِ" android:keyOutputText="ِ" />
+        <Key android:codes="1016" android:keyLabel="َ" android:keyOutputText="َ" />
+        <Key android:codes="1017" android:keyLabel="ق" android:keyOutputText="ق" />
+        <Key android:codes="1018" android:keyLabel="ف" android:keyOutputText="ف" />
+        <Key android:codes="1019" android:keyLabel="ّ" android:keyOutputText="ّ" />
+        <Key android:codes="1020" android:keyLabel="ج" android:keyOutputText="ج" />
+        <Key android:codes="1021" android:keyLabel="ه" android:keyOutputText="ه" />
+        <Key android:codes="1022" android:keyLabel="خ" android:keyOutputText="خ" />
+        <Key android:codes="1023" android:keyLabel="چ" android:keyOutputText="چ" />
+        <Key android:codes="1024" android:keyLabel="{" android:keyOutputText="{" />
+        <Key android:codes="1025" android:keyLabel="}" android:keyOutputText="}" />
+        <Key android:codes="1026" android:keyLabel="\" android:keyOutputText="\" />
+    </Row>
+    <Row android:keyWidth="9.091%p">
+        <Key android:codes="1027" android:keyLabel="ش" android:keyOutputText="ش" />
+        <Key android:codes="1028" android:keyLabel="س" android:keyOutputText="س" />
+        <Key android:codes="1029" android:keyLabel="ی" android:keyOutputText="ی" />
+        <Key android:codes="1030" android:keyLabel="ب" android:keyOutputText="ب" />
+        <Key android:codes="1031" android:keyLabel="ل" android:keyOutputText="ل" />
+        <Key android:codes="1032" android:keyLabel="آ" android:keyOutputText="آ" />
+        <Key android:codes="1033" android:keyLabel="ت" android:keyOutputText="ت" />
+        <Key android:codes="1034" android:keyLabel="ن" android:keyOutputText="ن" />
+        <Key android:codes="1035" android:keyLabel="م" android:keyOutputText="م" />
+        <Key android:codes="1036" android:keyLabel="ک" android:keyOutputText="ک" />
+        <Key android:codes="1037" android:keyLabel="گ" android:keyOutputText="گ" />
+    </Row>
+    <Row android:keyWidth="10.0%p">
+        <Key android:codes="1038" android:keyLabel="ZWNJ" android:keyOutputText="‌" />
+        <Key android:codes="1039" android:keyLabel="ژ" android:keyOutputText="ژ" />
+        <Key android:codes="1040" android:keyLabel="ز" android:keyOutputText="ز" />
+        <Key android:codes="1041" android:keyLabel="ر" android:keyOutputText="ر" />
+        <Key android:codes="1042" android:keyLabel="ْ" android:keyOutputText="ْ" />
+        <Key android:codes="1043" android:keyLabel="د" android:keyOutputText="د" />
+        <Key android:codes="1044" android:keyLabel="پ" android:keyOutputText="پ" />
+        <Key android:codes="1045" android:keyLabel="و" android:keyOutputText="و" />
+        <Key android:codes="1046" android:keyLabel="." android:keyOutputText="." />
+        <Key android:codes="1047" android:keyLabel="/" android:keyOutputText="/" />
+    </Row>
+    <Row android:keyWidth="14%p" android:rowEdgeFlags="bottom">
+        <Key android:codes="-1" android:keyLabel="⇧" android:isModifier="true" android:isSticky="true" android:keyWidth="14%p" />
+        <Key android:codes="1048" android:keyLabel=" " android:keyOutputText=" " android:keyWidth="58%p" android:isRepeatable="true" />
+        <Key android:codes="-5" android:keyIcon="@android:drawable/ic_input_delete" android:keyWidth="14%p" android:isRepeatable="true" />
+        <Key android:codes="10" android:keyLabel="⏎" android:keyWidth="14%p" />
+    </Row>
+</Keyboard>
