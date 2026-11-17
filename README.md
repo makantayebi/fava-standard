@@ -56,14 +56,17 @@ declared deliberately, and *from that point on*:
 - **minor** — new keys/behavior added without changing existing ones.
 - **patch** — a correction to documentation/metadata, no behavior change.
 
-There are three versions so far. `v0.0.1` is the original Windows design;
+There are four versions so far. `v0.0.1` is the original Windows design;
 `v0.0.2` is a substantial reassignment of several keys developed while
 building the Ubuntu port — see `versions/v0.0.2/notes.md`, which also
 documents an unintentional Y/Z mixup discovered along the way. `v0.0.3`
 adds shift+Q/W/E as one-keystroke disambiguated vowels, implemented via
 Compose rather than a plain key binding — see `versions/v0.0.3/notes.md`
-for the mechanism. Read `v0.0.2`'s notes first if you want the full,
-slightly messy, honest history behind where things currently stand.
+for the mechanism. `v0.0.4` splits و's consonant/vowel ambiguity by
+repurposing سکون, assigned to the key freed in `v0.0.3` — see
+`versions/v0.0.4/notes.md` for why several other options were rejected
+first. Read `v0.0.2`'s notes first if you want the full, slightly
+messy, honest history behind where things currently stand.
 
 ## Using `tools/render.py`
 

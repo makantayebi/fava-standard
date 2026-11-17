@@ -3,6 +3,21 @@
 All notable changes to the Fava layout. Each entry links to the full
 writeup in that version's `notes.md`.
 
+## v0.0.4 — 2026-11-17
+
+- Split و's two unrelated sounds (consonant /v/ vs. vowel /uː/): bare و
+  stays the consonant default, و followed by **B** (سکون) now explicitly
+  marks the vowel reading — دآووْد for داوود, for example.
+- سکون's old meaning ("no vowel follows") is retired everywhere else in
+  Fava — deliberately, since it was barely ever written in real Persian
+  anyway. Several other options (borrowed Uyghur-style letters, doubled
+  وو, damma-on-vav, obscure Quranic marks) were explored and rejected,
+  mostly for colliding with real existing words (داوود، طاووس، مسؤول) —
+  full reasoning in
+  [`versions/v0.0.4/notes.md`](versions/v0.0.4/notes.md).
+- Fills the **B** key, freed in `v0.0.3` pending exactly this kind of
+  decision.
+
 ## v0.0.3 — 2026-11-17
 
 - Shift+Q/W/E now type the disambiguated word-initial short vowel
@@ -12,8 +27,8 @@ writeup in that version's `notes.md`.
   [`versions/v0.0.3/notes.md`](versions/v0.0.3/notes.md) for how, and
   why a normal `.xkb_symbols` key binding can't do this directly.
 - Shift+J's tatweel dropped — unneeded.
-- ژ freed from B (X keeps it alone); B is now explicitly unassigned
-  (`base: null`), reserved for a future decision.
+- ژ freed from B (X keeps it alone); B left explicitly unassigned
+  (`base: null`) — filled in `v0.0.4`, see below.
 
 ## v0.0.2 — 2026-11-16
 
