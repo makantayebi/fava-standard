@@ -23,7 +23,11 @@ targets:
     status: implemented
     repo: fava-android-keyboard
     script_version: "0.0.5"
+    app_version: "0.1.0"
     note: >
       One layout serves all physical differences — Android IMEs render
       their own on-screen keyboard, independent of any physical keyboard
-      or regional variant.
+      or regional variant. app_version is this target's own release
+      version (app/build.gradle.kts), separate from script_version —
+      it moves on Android-only changes (like the globe/IME-switch key
+      added in 0.1.0) that don't touch layout.yaml at all.

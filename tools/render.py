@@ -376,13 +376,17 @@ def render_android_keyboard(layout, shifted, with_function_row=True):
         lines.append("    </Row>")
 
     if with_function_row:
-        lines.append('    <Row android:keyWidth="14%p" android:rowEdgeFlags="bottom">')
+        lines.append('    <Row android:keyWidth="12%p" android:rowEdgeFlags="bottom">')
         # momentary shift (one character, then reverts) is handled in Kotlin;
         # isSticky is deliberately omitted — that's a lock-style flag we don't want
-        lines.append('        <Key android:codes="-1" android:keyLabel="⇧" android:isModifier="true" android:keyWidth="14%p" />')
-        lines.append(f'        <Key android:codes="{code+1}" android:keyLabel="{xml_escape(chars_for(cp_list(layout["keys"]["SPCE"]["base"])) or " ")}" android:keyOutputText=" " android:keyWidth="58%p" android:isRepeatable="true" />')
-        lines.append('        <Key android:codes="-5" android:keyIcon="@android:drawable/ic_input_delete" android:keyWidth="14%p" android:isRepeatable="true" />')
-        lines.append('        <Key android:codes="10" android:keyLabel="⏎" android:keyWidth="14%p" />')
+        lines.append('        <Key android:codes="-1" android:keyLabel="⇧" android:isModifier="true" android:keyWidth="12%p" />')
+        # globe/language-switch key, code 11 — same role as Gboard's own globe
+        # key: hand off to the system's "switch to next IME" (FavaInputMethodService
+        # handles GLOBE_CODE directly, no XML-level special casing beyond the code)
+        lines.append('        <Key android:codes="11" android:keyLabel="🌐" android:keyWidth="12%p" />')
+        lines.append(f'        <Key android:codes="{code+1}" android:keyLabel="{xml_escape(chars_for(cp_list(layout["keys"]["SPCE"]["base"])) or " ")}" android:keyOutputText=" " android:keyWidth="50%p" android:isRepeatable="true" />')
+        lines.append('        <Key android:codes="-5" android:keyIcon="@android:drawable/ic_input_delete" android:keyWidth="13%p" android:isRepeatable="true" />')
+        lines.append('        <Key android:codes="10" android:keyLabel="⏎" android:keyWidth="13%p" />')
         lines.append("    </Row>")
 
     lines.append("</Keyboard>")

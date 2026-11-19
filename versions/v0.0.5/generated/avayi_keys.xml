@@ -56,10 +56,11 @@
         <Key android:codes="1043" android:keyLabel="." android:keyOutputText="." />
         <Key android:codes="1044" android:keyLabel="/" android:keyOutputText="/" />
     </Row>
-    <Row android:keyWidth="14%p" android:rowEdgeFlags="bottom">
-        <Key android:codes="-1" android:keyLabel="⇧" android:isModifier="true" android:keyWidth="14%p" />
-        <Key android:codes="1045" android:keyLabel=" " android:keyOutputText=" " android:keyWidth="58%p" android:isRepeatable="true" />
-        <Key android:codes="-5" android:keyIcon="@android:drawable/ic_input_delete" android:keyWidth="14%p" android:isRepeatable="true" />
-        <Key android:codes="10" android:keyLabel="⏎" android:keyWidth="14%p" />
+    <Row android:keyWidth="12%p" android:rowEdgeFlags="bottom">
+        <Key android:codes="-1" android:keyLabel="⇧" android:isModifier="true" android:keyWidth="12%p" />
+        <Key android:codes="11" android:keyLabel="🌐" android:keyWidth="12%p" />
+        <Key android:codes="1045" android:keyLabel=" " android:keyOutputText=" " android:keyWidth="50%p" android:isRepeatable="true" />
+        <Key android:codes="-5" android:keyIcon="@android:drawable/ic_input_delete" android:keyWidth="13%p" android:isRepeatable="true" />
+        <Key android:codes="10" android:keyLabel="⏎" android:keyWidth="13%p" />
     </Row>
 </Keyboard>
