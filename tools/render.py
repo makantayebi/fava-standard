@@ -346,7 +346,7 @@ def render_android_keyboard(layout, shifted, with_function_row=True):
         "<!-- Do not hand-edit — change layout.yaml and re-run tools/render.py instead. -->",
         '<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"',
         '    android:keyWidth="10%p" android:keyHeight="54dp"',
-        '    android:horizontalGap="4dp" android:verticalGap="6dp">',
+        '    android:horizontalGap="0px" android:verticalGap="0px">',
     ]
     code = 1000
     for row in ROWS:

@@ -3,7 +3,7 @@
 <!-- Do not hand-edit — change layout.yaml and re-run tools/render.py instead. -->
 <Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
     android:keyWidth="10%p" android:keyHeight="54dp"
-    android:horizontalGap="4dp" android:verticalGap="6dp">
+    android:horizontalGap="0px" android:verticalGap="0px">
     <Row android:keyWidth="7.692%p">
         <Key android:codes="1001" android:keyLabel="÷" android:keyOutputText="÷" />
         <Key android:codes="1002" android:keyLabel="۱" android:keyOutputText="۱" />
