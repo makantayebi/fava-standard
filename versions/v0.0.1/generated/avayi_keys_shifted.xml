@@ -25,7 +25,7 @@
         <Key android:codes="1016" android:keyLabel=" ِ" android:keyOutputText=" ِ" />
         <Key android:codes="1017" android:keyLabel="ق" android:keyOutputText="ق" />
         <Key android:codes="1018" android:keyLabel="،" android:keyOutputText="،" />
-        <Key android:codes="1019" android:keyLabel="نیم‌فاصله" android:keyOutputText="‌" />
+        <Key android:codes="1019" android:keyLabel="نیم‌\nفاصله" android:keyOutputText="‌" />
         <Key android:codes="1020" android:keyLabel="ج" android:keyOutputText="ج" />
         <Key android:codes="1021" android:keyLabel="ه" android:keyOutputText="ه" />
         <Key android:codes="1022" android:keyLabel="خ" android:keyOutputText="خ" />

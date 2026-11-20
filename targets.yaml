@@ -23,7 +23,7 @@ targets:
     status: implemented
     repo: fava-android-keyboard
     script_version: "0.0.5"
-    app_version: "0.2.1"
+    app_version: "0.2.2"
     note: >
       One layout serves all physical differences — Android IMEs render
       their own on-screen keyboard, independent of any physical keyboard
