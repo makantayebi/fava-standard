@@ -317,13 +317,11 @@ SINGLE_WIDTH = PAD * 2 + BOARD_W
 
 
 # --- Android keyboard-XML generation (android.inputmethodservice.Keyboard format) ---
-ANDROID_KEY_LABEL = {"‌": "نیم‌\\nفاصله", "‍": "ZWJ"}  # نیم‌فاصله is the real, established Persian term for ZWNJ; no
-# two-line label — one line is too wide for a ~10%-width key at the Android
-# keyboard's label text size and overflows past the key (and, for the
-# leftmost key in its row, past the screen edge). \n here is the literal
-# two-character escape AAPT turns into a real line break when compiling the
-# resource — an actual embedded newline byte would just get XML-normalized
-# away into a space instead.
+ANDROID_KEY_LABEL = {"‌": "◂┆▸", "‍": "ZWJ"}  # نیم‌فاصله (the real Persian term
+# for ZWNJ) was too wide for a ~10%-width key at the Android keyboard's label
+# text size and overflowed past the key — and the screen's left edge, since
+# it's the leftmost key in its row. This glyph-based symbol (narrowing arrows
+# around a thin break) fits a single line and reads as "half-space" visually.
 # equivalent common Persian term for ZWJ is established, and it's not
 # currently reachable from any key anyway, so it's left in Latin rather
 # than inventing one.

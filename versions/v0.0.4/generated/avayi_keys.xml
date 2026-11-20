@@ -45,7 +45,7 @@
         <Key android:codes="1034" android:keyLabel="گ" android:keyOutputText="گ" />
     </Row>
     <Row android:keyWidth="10.0%p">
-        <Key android:codes="1035" android:keyLabel="نیم‌\nفاصله" android:keyOutputText="‌" />
+        <Key android:codes="1035" android:keyLabel="◂┆▸" android:keyOutputText="‌" />
         <Key android:codes="1036" android:keyLabel="ژ" android:keyOutputText="ژ" />
         <Key android:codes="1037" android:keyLabel="ز" android:keyOutputText="ز" />
         <Key android:codes="1038" android:keyLabel="ر" android:keyOutputText="ر" />
