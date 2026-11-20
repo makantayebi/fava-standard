@@ -88,6 +88,13 @@ def load_layout(version):
         return yaml.safe_load(f)
 
 
+ACTION_BACKSPACE = "BACKSPACE"  # the only non-codepoint key value this schema
+# supports so far — a key that performs an action instead of typing a
+# character. Checked for explicitly at each render site rather than taught
+# to cp_list, since "what codepoints does this type" stops being the right
+# question once a key isn't typing anything.
+
+
 def cp_list(value):
     """A key's base/shift value is either one 'U+XXXX' string or a list of them."""
     if value is None:
@@ -127,6 +134,9 @@ def render_xkb(layout):
         spec = layout["keys"].get(key)
         if not spec:
             continue
+        if spec.get("base") == ACTION_BACKSPACE:
+            lines.append(f"    key <{key}> {{ [ BackSpace, BackSpace ] }};")
+            continue
         base_cps = cp_list(spec.get("base"))
         shift_cps = cp_list(spec.get("shift")) or base_cps
 
@@ -163,6 +173,8 @@ def render_compose(layout):
         if not spec:
             continue
         for level_name in ("base", "shift"):
+            if spec.get(level_name) == ACTION_BACKSPACE:
+                continue
             cps = cp_list(spec.get(level_name))
             if level_name == "shift" and not cps:
                 continue  # omitted shift = same as base, not a distinct rule to compose
@@ -236,6 +248,58 @@ def wrap_label(text):
     return [text]
 
 
+def key_svg(x, y, w, h, corner_label, lo, hi):
+    """One key box: corner_label is the small physical-key-name hint
+    (top-left), hi is the shift-level glyph (top-right, blue), lo is the
+    base-level glyph (bottom-right, wraps to two lines if it has an
+    embedded ZWNJ/ZWJ). Shared by the physical-layout diagram and the
+    Android on-screen-layout diagram so they stay visually consistent."""
+    lo_disp, hi_disp = display_text(lo), display_text(hi)
+    hi_size = fit_font_size(hi_disp, w - 14, 9) if hi_disp != hi else 18
+
+    if lo_disp != lo:
+        lo_lines = wrap_label(lo_disp)
+        lo_size = fit_font_size(max(lo_lines, key=visual_width), w - 14, 10)
+    else:
+        lo_lines, lo_size = [lo_disp], 20
+
+    if len(lo_lines) == 2:
+        lo_text_svg = (
+            f'<text x="{x+w-10}" y="{y+h-24}" font-size="{lo_size}" fill="#f0f0f0" '
+            f'text-anchor="end">{tspans(lo_lines[0])}</text>'
+            f'<text x="{x+w-10}" y="{y+h-10}" font-size="{lo_size}" fill="#f0f0f0" '
+            f'text-anchor="end">{tspans(lo_lines[1])}</text>'
+        )
+    else:
+        lo_text_svg = (
+            f'<text x="{x+w-10}" y="{y+h-12}" font-size="{lo_size}" fill="#f0f0f0" '
+            f'text-anchor="end">{tspans(lo_lines[0])}</text>'
+        )
+
+    return (
+        f'<g><rect x="{x}" y="{y}" width="{w}" height="{h}" rx="8" '
+        f'fill="#2b2b2b" stroke="#555" stroke-width="1.5"/>'
+        f'<text x="{x+8}" y="{y+16}" font-size="10" fill="#888" '
+        f'font-family="sans-serif">{svg_escape(corner_label)}</text>'
+        f'<text x="{x+w-10}" y="{y+22}" font-size="{hi_size}" fill="#7fd1ff" '
+        f'text-anchor="end">{tspans(hi_disp)}</text>'
+        f'{lo_text_svg}</g>'
+    )
+
+
+def key_lo_hi(spec):
+    """A key's (base-display, shift-display) text, honoring the
+    "omitted shift = same as base" data convention and the backspace
+    action sentinel."""
+    if spec.get("base") == ACTION_BACKSPACE:
+        return "⌫", ""
+    lo = chars_for(cp_list(spec.get("base")))
+    hi = chars_for(cp_list(spec.get("shift"))) or (lo if spec.get("shift") is None else "")
+    if spec.get("shift") is None:
+        hi = ""  # "omitted = same as base" is a *data* convention, not a display one
+    return lo, hi
+
+
 def render_keyboard_svg(x0, y0, layout):
     title = f'{layout["version"]} — {layout["name"]}'
     parts = [f'<text x="{x0}" y="{y0 - 18}" font-size="16" font-weight="600" '
@@ -246,42 +310,43 @@ def render_keyboard_svg(x0, y0, layout):
         for col_i, (label, key) in enumerate(row):
             x = x_start + col_i * (KEY_W + GAP)
             spec = layout["keys"].get(key, {})
-            lo = chars_for(cp_list(spec.get("base")))
-            hi = chars_for(cp_list(spec.get("shift"))) or (lo if spec.get("shift") is None else "")
-            if spec.get("shift") is None:
-                hi = ""  # "omitted = same as base" is a *data* convention, not a display one
-            lo_disp, hi_disp = display_text(lo), display_text(hi)
-            hi_size = fit_font_size(hi_disp, KEY_W - 14, 9) if hi_disp != hi else 18
-
-            if lo_disp != lo:
-                lo_lines = wrap_label(lo_disp)
-                lo_size = fit_font_size(max(lo_lines, key=visual_width), KEY_W - 14, 10)
-            else:
-                lo_lines, lo_size = [lo_disp], 20
-
-            if len(lo_lines) == 2:
-                lo_text_svg = (
-                    f'<text x="{x+KEY_W-10}" y="{y+KEY_H-24}" font-size="{lo_size}" fill="#f0f0f0" '
-                    f'text-anchor="end">{tspans(lo_lines[0])}</text>'
-                    f'<text x="{x+KEY_W-10}" y="{y+KEY_H-10}" font-size="{lo_size}" fill="#f0f0f0" '
-                    f'text-anchor="end">{tspans(lo_lines[1])}</text>'
-                )
-            else:
-                lo_text_svg = (
-                    f'<text x="{x+KEY_W-10}" y="{y+KEY_H-12}" font-size="{lo_size}" fill="#f0f0f0" '
-                    f'text-anchor="end">{tspans(lo_lines[0])}</text>'
-                )
-
-            parts.append(
-                f'<g><rect x="{x}" y="{y}" width="{KEY_W}" height="{KEY_H}" rx="8" '
-                f'fill="#2b2b2b" stroke="#555" stroke-width="1.5"/>'
-                f'<text x="{x+8}" y="{y+16}" font-size="10" fill="#888" '
-                f'font-family="sans-serif">{svg_escape(label)}</text>'
-                f'<text x="{x+KEY_W-10}" y="{y+22}" font-size="{hi_size}" fill="#7fd1ff" '
-                f'text-anchor="end">{tspans(hi_disp)}</text>'
-                f'{lo_text_svg}</g>'
-            )
+            lo, hi = key_lo_hi(spec)
+            parts.append(key_svg(x, y, KEY_W, KEY_H, label, lo, hi))
     bottom = y0 + len(ROWS) * (KEY_H + GAP)
+    return "\n".join(parts), bottom
+
+
+def render_android_svg(x0, y0, layout):
+    """What the Android on-screen keyboard actually shows: the {}\\ cluster
+    hidden, the ZWNJ key labeled with its Android symbol, and a 5th row
+    for the function keys (shift/globe/space/delete/enter) that only
+    exist on this target. Mirrors avayi_keys.xml/avayi_keys_shifted.xml,
+    not the physical ANSI diagram above."""
+    title = f'{layout["version"]} — {layout["name"]} (Android on-screen layout)'
+    parts = [f'<text x="{x0}" y="{y0 - 18}" font-size="16" font-weight="600" '
+             f'fill="#e6e6e6">{tspans(title)}</text>']
+    android_rows = [[(lbl, key) for lbl, key in row if key not in ANDROID_HIDE_KEYS] for row in ROWS]
+    for row_i, row in enumerate(android_rows):
+        y = y0 + row_i * (KEY_H + GAP)
+        n = len(row)
+        w = (BOARD_W - (n - 1) * GAP) / n
+        for col_i, (label, key) in enumerate(row):
+            x = x0 + col_i * (w + GAP)
+            spec = layout["keys"].get(key, {})
+            lo, hi = key_lo_hi(spec)
+            lo_disp = ANDROID_KEY_LABEL.get(lo, lo).replace("\\n", "\n")
+            parts.append(key_svg(x, y, w, KEY_H, label, lo_disp, hi))
+
+    func_y = y0 + len(android_rows) * (KEY_H + GAP)
+    func_row = [("shift", "⇧", ""), ("globe", "🌐", ""), ("space", "␣", ""),
+                ("del", "⌫", ""), ("enter", "⏎", "")]
+    func_widths = [0.12, 0.12, 0.50, 0.13, 0.13]
+    fx = x0
+    for (corner, lo, hi), frac in zip(func_row, func_widths):
+        w = BOARD_W * frac
+        parts.append(key_svg(fx, func_y, w, KEY_H, corner, lo, hi))
+        fx += w + GAP
+    bottom = func_y + KEY_H + GAP
     return "\n".join(parts), bottom
 
 
@@ -365,6 +430,13 @@ def render_android_keyboard(layout, shifted, with_function_row=True):
             level = spec.get("shift") if shifted else spec.get("base")
             if level is None:
                 level = spec.get("base")  # shift omitted = same as base
+            if level == ACTION_BACKSPACE:
+                lines.append(
+                    '        <Key android:codes="-5" '
+                    'android:keyIcon="@android:drawable/ic_input_delete" '
+                    'android:isRepeatable="true" />'
+                )
+                continue
             cps = cp_list(level)
             text = chars_for(cps) if cps else ""
             # a phone keycap is too small for the diagram's full placeholder
@@ -425,6 +497,11 @@ def main():
     svg = wrap_svg([board_svg], SINGLE_WIDTH, bottom + 10, CAPTION)
     (out_dir / "layout.svg").write_text(svg, encoding="utf-8")
     print(f"wrote {out_dir / 'layout.svg'}")
+
+    android_svg, android_bottom = render_android_svg(PAD, 60, layout)
+    android_wrapped = wrap_svg([android_svg], SINGLE_WIDTH, android_bottom + 10, CAPTION)
+    (out_dir / "android_layout.svg").write_text(android_wrapped, encoding="utf-8")
+    print(f"wrote {out_dir / 'android_layout.svg'}")
 
     if args.compare:
         other = load_layout(args.compare)

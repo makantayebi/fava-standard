@@ -12,7 +12,7 @@ targets:
   ubuntu-us-ansi:
     status: implemented
     repo: ubuntu-keyboard
-    script_version: "0.0.5"
+    script_version: "0.0.6"
     note: >
       XKB's own keyboard geometry already abstracts ANSI-vs-ISO physical
       key placement for the same symbols file — this is the only Linux
@@ -22,8 +22,8 @@ targets:
   android:
     status: implemented
     repo: fava-android-keyboard
-    script_version: "0.0.5"
-    app_version: "0.2.4"
+    script_version: "0.0.6"
+    app_version: "0.2.5"
     note: >
       One layout serves all physical differences — Android IMEs render
       their own on-screen keyboard, independent of any physical keyboard

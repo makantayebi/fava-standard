@@ -1,0 +1,59 @@
+// Generated from fava-standard versions/0.0.6/layout.yaml
+// Do not hand-edit — change layout.yaml and re-run tools/render.py instead.
+partial alphanumeric_keys
+xkb_symbols "avayi" {
+    name[Group1]= "Fava (فاوآیی)";
+
+    key.type[Group1]="ALPHABETIC";
+
+    key <TLDE> { [ division, multiply ] };
+    key <AE01> { [ Farsi_1, exclam ] };
+    key <AE02> { [ Farsi_2, at ] };
+    key <AE03> { [ Farsi_3, numbersign ] };
+    key <AE04> { [ Farsi_4, UFDFC ] };
+    key <AE05> { [ Farsi_5, percent ] };
+    key <AE06> { [ Farsi_6, asciicircum ] };
+    key <AE07> { [ Farsi_7, degree ] };
+    key <AE08> { [ Farsi_8, asterisk ] };
+    key <AE09> { [ Farsi_9, parenleft ] };
+    key <AE10> { [ Farsi_0, parenright ] };
+    key <AE11> { [ minus, underscore ] };
+    key <AE12> { [ equal, plus ] };
+    key <AD01> { [ Arabic_damma, UF103 ] };
+    key <AD02> { [ Arabic_kasra, UF102 ] };
+    key <AD03> { [ Arabic_fatha, UF101 ] };
+    key <AD04> { [ Arabic_qaf, Arabic_qaf ] };
+    key <AD05> { [ Arabic_feh, Arabic_comma ] };
+    key <AD06> { [ Arabic_shadda, Arabic_shadda ] };
+    key <AD07> { [ Arabic_jeem, Arabic_jeem ] };
+    key <AD08> { [ Arabic_heh, Arabic_heh ] };
+    key <AD09> { [ Arabic_khah, Arabic_khah ] };
+    key <AD10> { [ Arabic_tcheh, Arabic_tcheh ] };
+    key <AD11> { [ braceleft, bracketleft ] };
+    key <AD12> { [ braceright, bracketright ] };
+    key <BKSL> { [ backslash, bar ] };
+    key <AC01> { [ Arabic_sheen, Arabic_sheen ] };
+    key <AC02> { [ Arabic_seen, Arabic_seen ] };
+    key <AC03> { [ Farsi_yeh, Farsi_yeh ] };
+    key <AC04> { [ Arabic_beh, Arabic_beh ] };
+    key <AC05> { [ Arabic_lam, Arabic_lam ] };
+    key <AC06> { [ Arabic_maddaonalef, Arabic_maddaonalef ] };
+    key <AC07> { [ Arabic_teh, Arabic_teh ] };
+    key <AC08> { [ Arabic_noon, Arabic_noon ] };
+    key <AC09> { [ Arabic_meem, Arabic_meem ] };
+    key <AC10> { [ Arabic_keheh, colon ] };
+    key <AC11> { [ Arabic_gaf, Arabic_semicolon ] };
+    key <AB01> { [ U200C, U200C ] };
+    key <AB02> { [ Arabic_jeh, Arabic_jeh ] };
+    key <AB03> { [ Arabic_zain, Arabic_zain ] };
+    key <AB04> { [ Arabic_ra, Arabic_ra ] };
+    key <AB05> { [ UF104, UF104 ] };
+    key <AB06> { [ Arabic_dal, period ] };
+    key <AB07> { [ Arabic_peh, slash ] };
+    key <AB08> { [ Arabic_waw, Arabic_question_mark ] };
+    key <AB09> { [ period, period ] };
+    key <AB10> { [ BackSpace, BackSpace ] };
+    key <LSGT> { [ EuroSign, section ] };
+    key <KPDL> { [ period, period ] };
+    key <SPCE> { [ space, space ] };
+};
