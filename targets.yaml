@@ -45,16 +45,19 @@ targets:
   android:
     status: implemented
     repo: fava-android-keyboard
-    layout_version: "0.0.6"
+    layout_version: "0.0.7"
     forked_from_script_version: "0.0.5"
-    app_version: "0.2.5"
+    app_version: "0.3.0"
     note: >
-      Forked at base 0.0.5 (layouts/android/v0.0.6/layout.yaml) — the /
-      key is a second backspace, with its displaced characters moved to
-      previously-unused shift levels. A touchscreen benefits from an
-      easy-to-reach second backspace in a way a physical keyboard
-      doesn't, so this is Android-specific rather than a base-script
-      change. app_version is this target's own release version
-      (app/build.gradle.kts), independent of layout_version — it moves
-      on Android-only changes (the globe/IME-switch key, bug fixes)
-      that don't touch any layout.yaml at all.
+      Forked at base 0.0.5 (layouts/android/v0.0.7/layout.yaml). v0.0.7
+      relocates shift to AB01 (left of ژ) and ZWNJ to the function row
+      (right of space), removes two keys to make room (the dedicated
+      function-row delete, redundant since 0.0.6's backspace key; the
+      dot key, redundant since 0.0.6's shift+AB06), adds shift+ه as a
+      second home for the shadda, and adds a ۱۲۳ page (numbers/symbols
+      on the AD/AC rows only). All Android-specific — a physical
+      keyboard doesn't need a page toggle or benefit from relocating a
+      dedicated shift key. app_version is this target's own release
+      version (app/build.gradle.kts), independent of layout_version —
+      it moves on Android-only changes (the globe/IME-switch key, bug
+      fixes) that don't touch any layout.yaml at all.
