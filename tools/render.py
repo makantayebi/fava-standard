@@ -33,10 +33,15 @@ ROOT = Path(__file__).resolve().parent.parent
 VERSIONS_DIR = ROOT / "versions"
 LAYOUTS_DIR = ROOT / "layouts"
 
-# Which artifacts each --target knows how to produce. Add an entry here
-# when a new forked target is introduced (see layouts/README.md).
+# Which targets have their own tracked layout under layouts/<name>/, and
+# what they're currently forked from. A target can track the base script
+# exactly (no actual divergence yet, like ubuntu-us-ansi) and still live
+# here — "has its own version number" and "has actually diverged" are
+# different questions. Add an entry here for a new target (see
+# layouts/README.md).
 TARGET_ARTIFACTS = {
-    "android": "android",  # android_keys.xml/_shifted.xml + android_layout.svg
+    "android": "android",      # android_keys.xml/_shifted.xml + android_layout.svg
+    "ubuntu-us-ansi": "xkb",   # avayi.xkb_symbols + avayi.XCompose + layout.svg, same as the base script
 }
 
 # --- physical keyboard grid, label shown in the diagram's corner + the layout.yaml key name ---
@@ -532,8 +537,9 @@ def render_target(args):
     out_dir.mkdir(parents=True, exist_ok=True)
 
     layout = load_layout(args.version, target=target)
+    kind = TARGET_ARTIFACTS[target]
 
-    if target == "android":
+    if kind == "android":
         (out_dir / "avayi_keys.xml").write_text(render_android_keyboard(layout, shifted=False), encoding="utf-8")
         print(f"wrote {out_dir / 'avayi_keys.xml'}")
         (out_dir / "avayi_keys_shifted.xml").write_text(render_android_keyboard(layout, shifted=True), encoding="utf-8")
@@ -543,6 +549,16 @@ def render_target(args):
         android_wrapped = wrap_svg([android_svg], SINGLE_WIDTH, android_bottom + 10, CAPTION)
         (out_dir / "android_layout.svg").write_text(android_wrapped, encoding="utf-8")
         print(f"wrote {out_dir / 'android_layout.svg'}")
+
+    elif kind == "xkb":
+        (out_dir / "avayi.xkb_symbols").write_text(render_xkb(layout), encoding="utf-8")
+        print(f"wrote {out_dir / 'avayi.xkb_symbols'}")
+        (out_dir / "avayi.XCompose").write_text(render_compose(layout), encoding="utf-8")
+        print(f"wrote {out_dir / 'avayi.XCompose'}")
+        board_svg, bottom = render_keyboard_svg(PAD, 60, layout)
+        svg = wrap_svg([board_svg], SINGLE_WIDTH, bottom + 10, CAPTION)
+        (out_dir / "layout.svg").write_text(svg, encoding="utf-8")
+        print(f"wrote {out_dir / 'layout.svg'}")
 
 
 def main():

@@ -30,12 +30,17 @@ targets:
   ubuntu-us-ansi:
     status: implemented
     repo: ubuntu-keyboard
-    script_version: "0.0.5"
+    layout_version: "0.0.5"
+    forked_from_script_version: "0.0.5"
     note: >
+      Tracked under layouts/ubuntu-us-ansi/v0.0.5/ — identical to base
+      0.0.5 today, no actual divergence yet, but given its own version
+      number like every other target (see layouts/README.md) rather
+      than being a special case that just reads versions/ directly.
       XKB's own keyboard geometry already abstracts ANSI-vs-ISO physical
       key placement for the same symbols file — this is the only Linux
       target that likely needs to exist at all. See TODO.md's
-      ubuntu-eu-iso entry. No fork yet — tracks the base script directly.
+      ubuntu-eu-iso entry.
 
   android:
     status: implemented
