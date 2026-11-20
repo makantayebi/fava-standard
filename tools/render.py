@@ -111,11 +111,13 @@ def load_layout(version, target=None):
         return yaml.safe_load(f)
 
 
-ACTION_BACKSPACE = "BACKSPACE"  # the only non-codepoint key value this schema
-# supports so far — a key that performs an action instead of typing a
-# character. Checked for explicitly at each render site rather than taught
-# to cp_list, since "what codepoints does this type" stops being the right
-# question once a key isn't typing anything.
+ACTION_BACKSPACE = "BACKSPACE"  # a key that performs an action instead of
+# typing a character. Checked for explicitly at each render site rather
+# than taught to cp_list, since "what codepoints does this type" stops
+# being the right question once a key isn't typing anything.
+ACTION_SHIFT = "SHIFT"  # the physical shift control, relocatable into the
+# main key grid (layouts/android/v0.0.7 moves it to AB01) instead of only
+# ever living in the Android function row.
 
 
 def cp_list(value):
@@ -310,13 +312,22 @@ def key_svg(x, y, w, h, corner_label, lo, hi):
     )
 
 
-def key_lo_hi(spec):
-    """A key's (base-display, shift-display) text, honoring the
-    "omitted shift = same as base" data convention and the backspace
-    action sentinel."""
-    if spec.get("base") == ACTION_BACKSPACE:
+def key_lo_hi(spec, page="shift"):
+    """A key's corner-display text, honoring the "omitted level = same as
+    base" data convention and the action-key sentinels (backspace,
+    shift). page="shift" (default) returns (base-display, shift-display)
+    for the usual two-corner diagram; page="symbols" returns
+    (symbols-display, "") — the symbols page has no second level of its
+    own to show in the other corner."""
+    base_val = spec.get("base")
+    if base_val == ACTION_BACKSPACE:
         return "⌫", ""
-    lo = chars_for(cp_list(spec.get("base")))
+    if base_val == ACTION_SHIFT:
+        return "⇧", ""
+    if page == "symbols":
+        sym_val = spec.get("symbols", base_val)  # omitted = same as base
+        return chars_for(cp_list(sym_val)), ""
+    lo = chars_for(cp_list(base_val))
     hi = chars_for(cp_list(spec.get("shift"))) or (lo if spec.get("shift") is None else "")
     if spec.get("shift") is None:
         hi = ""  # "omitted = same as base" is a *data* convention, not a display one
@@ -339,13 +350,15 @@ def render_keyboard_svg(x0, y0, layout):
     return "\n".join(parts), bottom
 
 
-def render_android_svg(x0, y0, layout):
-    """What the Android on-screen keyboard actually shows: the {}\\ cluster
+def render_android_svg(x0, y0, layout, page="shift"):
+    """What the Android on-screen keyboard actually shows, for a given
+    page ("shift" = the normal base/shift two-corner view, "symbols" =
+    the ۱۲۳ page): the {}\\ cluster (and others — see ANDROID_HIDE_KEYS)
     hidden, the ZWNJ key labeled with its Android symbol, and a 5th row
-    for the function keys (shift/globe/space/delete/enter) that only
-    exist on this target. Mirrors avayi_keys.xml/avayi_keys_shifted.xml,
-    not the physical ANSI diagram above."""
-    title = f'{layout["version"]} — {layout["name"]} (Android on-screen layout)'
+    for the function keys that only exist on this target. Mirrors
+    avayi_keys*.xml, not the physical ANSI diagram above."""
+    page_label = " — ۱۲۳ page" if page == "symbols" else ""
+    title = f'{layout["version"]} — {layout["name"]} (Android on-screen layout{page_label})'
     parts = [f'<text x="{x0}" y="{y0 - 18}" font-size="16" font-weight="600" '
              f'fill="#e6e6e6">{tspans(title)}</text>']
     android_rows = [[(lbl, key) for lbl, key in row if key not in ANDROID_HIDE_KEYS] for row in ROWS]
@@ -356,13 +369,16 @@ def render_android_svg(x0, y0, layout):
         for col_i, (label, key) in enumerate(row):
             x = x0 + col_i * (w + GAP)
             spec = layout["keys"].get(key, {})
-            lo, hi = key_lo_hi(spec)
+            lo, hi = key_lo_hi(spec, page=page)
             lo_disp = ANDROID_KEY_LABEL.get(lo, lo).replace("\\n", "\n")
             parts.append(key_svg(x, y, w, KEY_H, label, lo_disp, hi))
 
     func_y = y0 + len(android_rows) * (KEY_H + GAP)
-    func_row = [("shift", "⇧", ""), ("globe", "🌐", ""), ("space", "␣", ""),
-                ("del", "⌫", ""), ("enter", "⏎", "")]
+    zwnj_text = chars_for(cp_list(layout["keys"]["FUNCROW_ZWNJ"]["base"]))
+    zwnj_disp = ANDROID_KEY_LABEL.get(zwnj_text, zwnj_text).replace("\\n", "\n")
+    toggle_label = "ABC" if page == "symbols" else "۱۲۳"
+    func_row = [("toggle", toggle_label, ""), ("globe", "🌐", ""), ("space", "␣", ""),
+                ("zwnj", zwnj_disp, ""), ("enter", "⏎", "")]
     func_widths = [0.12, 0.12, 0.50, 0.13, 0.13]
     fx = x0
     for (corner, lo, hi), frac in zip(func_row, func_widths):
@@ -418,7 +434,9 @@ ANDROID_KEY_LABEL = {"‌": "◂┆▸", "‍": "ZWJ"}  # نیم‌فاصله (t
 # doesn't need the rarely-used {}\ cluster taking up row-2 space the way a
 # physical keyboard's dedicated keys do. The underlying script/layout.yaml
 # still defines them; this is an Android-rendering choice only.
-ANDROID_HIDE_KEYS = {"AD11", "AD12", "BKSL"}
+# AB09 (v0.0.7): the dot it typed is already reachable via shift+AB06
+# (د) as of v0.0.6 — removed to save space next to the AB10 backspace key.
+ANDROID_HIDE_KEYS = {"AD11", "AD12", "BKSL", "AB09"}
 
 
 def xml_escape(s):
@@ -426,15 +444,22 @@ def xml_escape(s):
              .replace('"', "&quot;"))
 
 
-def render_android_keyboard(layout, shifted, with_function_row=True):
-    """One android.inputmethodservice.Keyboard XML resource: either the
-    unshifted or the shifted page. Every character key uses
+SYMBOLS_CODE = 12  # the ۱۲۳/ABC page-toggle key — FavaInputMethodService
+# handles this directly, same spirit as GLOBE_CODE.
+
+
+def render_android_keyboard(layout, page, with_function_row=True):
+    """One android.inputmethodservice.Keyboard XML resource for one page:
+    "base", "shift", or "symbols". Every character key uses
     android:keyOutputText, so the IME only needs an onText() handler for
     them — no per-key Kotlin logic, same spirit as letting layout.yaml be
-    the only hand-edited input everywhere else."""
+    the only hand-edited input everywhere else. A key with no explicit
+    value for the requested page falls back to "base" (same "omitted =
+    same as base" convention already used for shift, extended to a
+    third level)."""
     lines = [
         '<?xml version="1.0" encoding="utf-8"?>',
-        f'<!-- Generated from fava-standard versions/{layout["version"]}/layout.yaml ({"shifted" if shifted else "base"}) -->',
+        f'<!-- Generated from fava-standard layouts/android/{layout["version"]}/layout.yaml ({page}) -->',
         "<!-- Do not hand-edit — change layout.yaml and re-run tools/render.py instead. -->",
         '<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"',
         '    android:keyWidth="10%p" android:keyHeight="54dp"',
@@ -450,14 +475,23 @@ def render_android_keyboard(layout, shifted, with_function_row=True):
         lines.append(f'    <Row android:keyWidth="{width}%p">')
         for _label, key in visible:
             spec = layout["keys"].get(key) or {}
-            level = spec.get("shift") if shifted else spec.get("base")
+            level = spec.get(page) if page != "base" else spec.get("base")
             if level is None:
-                level = spec.get("base")  # shift omitted = same as base
+                level = spec.get("base")  # omitted level = same as base
             if level == ACTION_BACKSPACE:
                 lines.append(
                     '        <Key android:codes="-5" '
                     'android:keyIcon="@android:drawable/ic_input_delete" '
                     'android:isRepeatable="true" />'
+                )
+                continue
+            if level == ACTION_SHIFT:
+                # momentary shift (one character, then reverts) is handled
+                # in Kotlin; isSticky is deliberately omitted — that's a
+                # lock-style flag we don't want
+                lines.append(
+                    '        <Key android:codes="-1" android:keyLabel="⇧" '
+                    'android:isModifier="true" />'
                 )
                 continue
             cps = cp_list(level)
@@ -476,15 +510,20 @@ def render_android_keyboard(layout, shifted, with_function_row=True):
 
     if with_function_row:
         lines.append('    <Row android:keyWidth="12%p" android:rowEdgeFlags="bottom">')
-        # momentary shift (one character, then reverts) is handled in Kotlin;
-        # isSticky is deliberately omitted — that's a lock-style flag we don't want
-        lines.append('        <Key android:codes="-1" android:keyLabel="⇧" android:isModifier="true" android:keyWidth="12%p" />')
+        if page == "symbols":
+            # same control, code 12 either way — FavaInputMethodService
+            # toggles the page and doesn't care which label was showing
+            lines.append('        <Key android:codes="12" android:keyLabel="ABC" android:keyWidth="12%p" />')
+        else:
+            lines.append('        <Key android:codes="12" android:keyLabel="۱۲۳" android:keyWidth="12%p" />')
         # globe/language-switch key, code 11 — same role as Gboard's own globe
         # key: hand off to the system's "switch to next IME" (FavaInputMethodService
         # handles GLOBE_CODE directly, no XML-level special casing beyond the code)
         lines.append('        <Key android:codes="11" android:keyLabel="🌐" android:keyWidth="12%p" />')
         lines.append(f'        <Key android:codes="{code+1}" android:keyLabel="{xml_escape(chars_for(cp_list(layout["keys"]["SPCE"]["base"])) or " ")}" android:keyOutputText=" " android:keyWidth="50%p" android:isRepeatable="true" />')
-        lines.append('        <Key android:codes="-5" android:keyIcon="@android:drawable/ic_input_delete" android:keyWidth="13%p" android:isRepeatable="true" />')
+        zwnj_text = chars_for(cp_list(layout["keys"]["FUNCROW_ZWNJ"]["base"]))
+        zwnj_label = ANDROID_KEY_LABEL.get(zwnj_text, zwnj_text)
+        lines.append(f'        <Key android:codes="{code+2}" android:keyLabel="{xml_escape(zwnj_label)}" android:keyOutputText="{xml_escape(zwnj_text)}" android:keyWidth="13%p" />')
         lines.append('        <Key android:codes="10" android:keyLabel="⏎" android:keyWidth="13%p" />')
         lines.append("    </Row>")
 
@@ -540,15 +579,26 @@ def render_target(args):
     kind = TARGET_ARTIFACTS[target]
 
     if kind == "android":
-        (out_dir / "avayi_keys.xml").write_text(render_android_keyboard(layout, shifted=False), encoding="utf-8")
+        has_symbols_page = any(spec and "symbols" in spec for spec in layout["keys"].values())
+
+        (out_dir / "avayi_keys.xml").write_text(render_android_keyboard(layout, page="base"), encoding="utf-8")
         print(f"wrote {out_dir / 'avayi_keys.xml'}")
-        (out_dir / "avayi_keys_shifted.xml").write_text(render_android_keyboard(layout, shifted=True), encoding="utf-8")
+        (out_dir / "avayi_keys_shifted.xml").write_text(render_android_keyboard(layout, page="shift"), encoding="utf-8")
         print(f"wrote {out_dir / 'avayi_keys_shifted.xml'}")
+        if has_symbols_page:
+            (out_dir / "avayi_keys_symbols.xml").write_text(render_android_keyboard(layout, page="symbols"), encoding="utf-8")
+            print(f"wrote {out_dir / 'avayi_keys_symbols.xml'}")
 
         android_svg, android_bottom = render_android_svg(PAD, 60, layout)
         android_wrapped = wrap_svg([android_svg], SINGLE_WIDTH, android_bottom + 10, CAPTION)
         (out_dir / "android_layout.svg").write_text(android_wrapped, encoding="utf-8")
         print(f"wrote {out_dir / 'android_layout.svg'}")
+
+        if has_symbols_page:
+            symbols_svg, symbols_bottom = render_android_svg(PAD, 60, layout, page="symbols")
+            symbols_wrapped = wrap_svg([symbols_svg], SINGLE_WIDTH, symbols_bottom + 10, CAPTION)
+            (out_dir / "android_layout_symbols.svg").write_text(symbols_wrapped, encoding="utf-8")
+            print(f"wrote {out_dir / 'android_layout_symbols.svg'}")
 
     elif kind == "xkb":
         (out_dir / "avayi.xkb_symbols").write_text(render_xkb(layout), encoding="utf-8")

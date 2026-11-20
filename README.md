@@ -9,23 +9,54 @@ machine. Those are downstream of this one.
 
 ## How this works
 
+Two independent things get versioned here, not one:
+
 ```
+SCRIPT_VERSION      <- the abstract Fava design, platform-agnostic
 versions/
   v0.0.1/
     layout.yaml     <- the definition: every physical key, what it types
     notes.md        <- why, in prose
     generated/      <- output of tools/render.py, checked in for convenience
-  v0.0.2/
+  v0.0.5/
     layout.yaml
     notes.md
     generated/
+
+layouts/            <- per-TARGET layouts, each with its OWN version number
+  android/
+    v0.0.7/
+      layout.yaml   <- forked from a base version, diverging for
+                       reasons specific to that platform
+      generated/
+  ubuntu-us-ansi/
+    v0.0.5/
+      layout.yaml   <- identical to base 0.0.5 today (no divergence
+                       yet), but still its own tracked copy, not a
+                       special case
+      generated/
+
+targets.yaml        <- which script/layout version each target is on
 schema/
   layout.schema.md  <- the layout.yaml format, field by field
 tools/
-  render.py         <- layout.yaml -> .xkb_symbols + SVG diagrams
+  render.py         <- layout.yaml -> .xkb_symbols / Android XML / SVG diagrams
 reference/
   (original design docs, pre-dating this repo's structure)
 ```
+
+- **Script version** (`SCRIPT_VERSION`, `versions/`) — the shared,
+  platform-agnostic design: which marks exist, what each one means, the
+  Q/W/E rotation, the وْ convention. Changes here are meant to apply
+  *everywhere*.
+- **Layout version** (`layouts/<target>/`) — one target's own fork,
+  independently versioned, for a change that's specific to that
+  platform and doesn't belong in the shared script (Android's extra
+  backspace key, its ۱۲۳ symbols page — a physical keyboard doesn't
+  need either). A target with no reason to diverge still gets its own
+  folder here (see `ubuntu-us-ansi`), it just stays identical to
+  whatever base version it tracks. See `layouts/README.md` for the full
+  model, including how to fork a new target.
 
 - **A version is immutable once it has a folder.** Deciding to change a
   key means creating a new version folder, not editing an old one.
@@ -69,26 +100,33 @@ first. `v0.0.5` collapses that into one keystroke: B now types وْ
 directly. Read `v0.0.2`'s notes first if you want the full, slightly
 messy, honest history behind where things currently stand.
 
-## Script version vs. target version
+## Script version vs. layout version (vs. app version)
 
-This repo tracks two different things that can change independently:
+Three independent things can appear per target, tracked in `targets.yaml`:
 
-- **Script version** (`SCRIPT_VERSION`) — the abstract Fava design: which
-  marks exist, what each one means, the Q/W/E rotation, the وْ
-  convention, etc. This is what `versions/vX.Y.Z/layout.yaml` actually
-  defines, same as always.
-- **Target version** (`targets.yaml`) — for each real keyboard (a
-  specific platform + physical layout combination), which script
-  version that target's own repo has actually caught up to implementing.
-  A target can lag behind the latest script version if nobody's
-  propagated the change into that platform yet.
+- **Script version** (`SCRIPT_VERSION`, `versions/`) — the shared,
+  platform-agnostic design: which marks exist, what each one means, the
+  Q/W/E rotation, the وْ convention. A target with `script_version` set
+  tracks this directly — no fork, no divergence.
+- **Layout version** (`layouts/<target>/`, plus `layout_version` +
+  `forked_from_script_version` in `targets.yaml`) — set *instead of*
+  `script_version` once a target has forked its own layout for
+  platform-specific reasons. `layout_version` is that fork's own
+  version number; `forked_from_script_version` records which base
+  version it diverged from.
+- **App version** (`app_version`) — a target's own release version for
+  the actual shipped app/installer (only targets with a real app have
+  this — e.g. Android's `app/build.gradle.kts`). Moves on UI/bug-fix
+  changes that don't touch any `layout.yaml` at all, forked or not.
 
-Right now these are all numerically identical (every implemented target
-tracks the latest script version) simply because nothing has had a
-chance to diverge yet — the distinction matters once a target-specific
-fix ships without a script change, or a script change doesn't get
-propagated to every target immediately. See `targets.yaml` for current
-status per target, and `TODO.md` for targets that don't exist yet.
+As of this writing: `android` has forked (`layout_version: 0.0.7`,
+`forked_from_script_version: 0.0.5`) — its extra backspace key and ۱۲۳
+symbols page don't belong in the shared script, since a physical
+keyboard doesn't need either. `ubuntu-us-ansi` has its own tracked copy
+under `layouts/` too, but is still identical to base `0.0.5` — no
+actual divergence yet. See `targets.yaml` for current status per
+target, `layouts/README.md` for the fork model and how to add a new
+one, and `TODO.md` for targets that don't exist yet.
 
 ## Using `tools/render.py`
 
