@@ -389,7 +389,7 @@ def render_android_svg(x0, y0, layout, page="shift"):
     return "\n".join(parts), bottom
 
 
-def wrap_svg(fragments, width, content_height, caption):
+def wrap_svg(fragments, width, content_height, caption, script_version=None):
     max_chars = max(20, int((width - 2 * PAD) / 6.2))
     words, lines, cur = caption.split(" "), [], ""
     for w in words:
@@ -408,10 +408,19 @@ def wrap_svg(fragments, width, content_height, caption):
     )
     height = caption_top + (len(lines) - 1) * 14 + 10
     body = "\n".join(fragments)
+    # Top-right corner badge: the base SCRIPT_VERSION this diagram's layout
+    # is built on — for a forked target this is its forked_from_script_version
+    # (the fork's OWN version is already in the title text), not duplicated
+    # per-diagram data since every diagram for a given layout shows the same one.
+    badge_svg = (
+        f'<text x="{width - PAD}" y="30" font-size="12" fill="#999" '
+        f'text-anchor="end" font-family="sans-serif">script {svg_escape(script_version)}</text>'
+        if script_version else ""
+    )
     return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
             f'viewBox="0 0 {width} {height}">\n'
             f'<rect x="0" y="0" width="{width}" height="{height}" fill="#1a1a1a"/>\n'
-            f'{body}\n{caption_svg}\n</svg>')
+            f'{badge_svg}\n{body}\n{caption_svg}\n</svg>')
 
 
 CAPTION = ('top-right glyph = shift level, bottom-right = base level, "_" = literal space, '
@@ -549,7 +558,7 @@ def render_base(args):
     print(f"wrote {out_dir / 'avayi.XCompose'}")
 
     board_svg, bottom = render_keyboard_svg(PAD, 60, layout)
-    svg = wrap_svg([board_svg], SINGLE_WIDTH, bottom + 10, CAPTION)
+    svg = wrap_svg([board_svg], SINGLE_WIDTH, bottom + 10, CAPTION, script_version=layout["version"])
     (out_dir / "layout.svg").write_text(svg, encoding="utf-8")
     print(f"wrote {out_dir / 'layout.svg'}")
 
@@ -559,7 +568,7 @@ def render_base(args):
         gap = 60
         this_y0 = other_bottom + gap
         this_svg, this_bottom = render_keyboard_svg(PAD, this_y0, layout)
-        combined = wrap_svg([other_svg, this_svg], SINGLE_WIDTH, this_bottom + 10, CAPTION)
+        combined = wrap_svg([other_svg, this_svg], SINGLE_WIDTH, this_bottom + 10, CAPTION, script_version=layout["version"])
         cmp_path = out_dir / f"vs-{args.compare}.svg"
         cmp_path.write_text(combined, encoding="utf-8")
         print(f"wrote {cmp_path}")
@@ -577,6 +586,11 @@ def render_target(args):
 
     layout = load_layout(args.version, target=target)
     kind = TARGET_ARTIFACTS[target]
+    # the base version this fork diverged from, for the diagram's corner
+    # badge — falls back to this layout's own version if it ever has no
+    # forked_from_script_version (shouldn't happen for a real fork, but
+    # better a slightly-wrong badge than a crash generating one).
+    script_version = layout.get("forked_from_script_version", layout["version"])
 
     if kind == "android":
         has_symbols_page = any(spec and "symbols" in spec for spec in layout["keys"].values())
@@ -590,13 +604,13 @@ def render_target(args):
             print(f"wrote {out_dir / 'avayi_keys_symbols.xml'}")
 
         android_svg, android_bottom = render_android_svg(PAD, 60, layout)
-        android_wrapped = wrap_svg([android_svg], SINGLE_WIDTH, android_bottom + 10, CAPTION)
+        android_wrapped = wrap_svg([android_svg], SINGLE_WIDTH, android_bottom + 10, CAPTION, script_version=script_version)
         (out_dir / "android_layout.svg").write_text(android_wrapped, encoding="utf-8")
         print(f"wrote {out_dir / 'android_layout.svg'}")
 
         if has_symbols_page:
             symbols_svg, symbols_bottom = render_android_svg(PAD, 60, layout, page="symbols")
-            symbols_wrapped = wrap_svg([symbols_svg], SINGLE_WIDTH, symbols_bottom + 10, CAPTION)
+            symbols_wrapped = wrap_svg([symbols_svg], SINGLE_WIDTH, symbols_bottom + 10, CAPTION, script_version=script_version)
             (out_dir / "android_layout_symbols.svg").write_text(symbols_wrapped, encoding="utf-8")
             print(f"wrote {out_dir / 'android_layout_symbols.svg'}")
 
@@ -606,7 +620,7 @@ def render_target(args):
         (out_dir / "avayi.XCompose").write_text(render_compose(layout), encoding="utf-8")
         print(f"wrote {out_dir / 'avayi.XCompose'}")
         board_svg, bottom = render_keyboard_svg(PAD, 60, layout)
-        svg = wrap_svg([board_svg], SINGLE_WIDTH, bottom + 10, CAPTION)
+        svg = wrap_svg([board_svg], SINGLE_WIDTH, bottom + 10, CAPTION, script_version=script_version)
         (out_dir / "layout.svg").write_text(svg, encoding="utf-8")
         print(f"wrote {out_dir / 'layout.svg'}")
 
