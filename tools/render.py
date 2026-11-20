@@ -1,13 +1,23 @@
 #!/usr/bin/env python3
-"""Render a versions/<x>/layout.yaml into its platform/visual artifacts.
+"""Render a layout.yaml into its platform/visual artifacts.
 
     python3 tools/render.py v0.0.2
         writes versions/v0.0.2/generated/avayi.xkb_symbols
            and versions/v0.0.2/generated/layout.svg
+        — the shared BASE script, used as-is by any target that hasn't
+        forked its own layout (e.g. ubuntu-us-ansi today).
 
     python3 tools/render.py v0.0.2 --compare v0.0.1
         also writes versions/v0.0.2/generated/vs-v0.0.1.svg,
         both versions stacked in one diagram for an at-a-glance diff.
+
+    python3 tools/render.py v0.0.6 --target android
+        writes layouts/android/v0.0.6/generated/avayi_keys.xml,
+           avayi_keys_shifted.xml, and android_layout.svg
+        — a target-specific FORK (its own layout.yaml, diverging from
+        the base script for reasons specific to that platform), with its
+        own independent version numbering. Only produces the artifacts
+        that target actually uses (no XKB/Compose for android).
 
 layout.yaml is the only input; nothing here is hand-edited.
 """
@@ -21,6 +31,13 @@ import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 VERSIONS_DIR = ROOT / "versions"
+LAYOUTS_DIR = ROOT / "layouts"
+
+# Which artifacts each --target knows how to produce. Add an entry here
+# when a new forked target is introduced (see layouts/README.md).
+TARGET_ARTIFACTS = {
+    "android": "android",  # android_keys.xml/_shifted.xml + android_layout.svg
+}
 
 # --- physical keyboard grid, label shown in the diagram's corner + the layout.yaml key name ---
 ROWS = [
@@ -82,8 +99,9 @@ COMPOSE_TRIGGER = {
 }
 
 
-def load_layout(version):
-    path = VERSIONS_DIR / version / "layout.yaml"
+def load_layout(version, target=None):
+    base = (LAYOUTS_DIR / target) if target else VERSIONS_DIR
+    path = base / version / "layout.yaml"
     with open(path, encoding="utf-8") as f:
         return yaml.safe_load(f)
 
@@ -469,12 +487,10 @@ def render_android_keyboard(layout, shifted, with_function_row=True):
     return "\n".join(lines) + "\n"
 
 
-def main():
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("version", help="e.g. v0.0.2 (must match a versions/<name>/ folder)")
-    ap.add_argument("--compare", metavar="OTHER_VERSION", help="also render OTHER_VERSION stacked below, for a diff view")
-    args = ap.parse_args()
-
+def render_base(args):
+    """The shared script: XKB symbols, Compose file, and the physical-
+    layout diagram. Used as-is by any target that hasn't forked its own
+    layout (see load_layout / --target for targets that have)."""
     out_dir = VERSIONS_DIR / args.version / "generated"
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -488,20 +504,10 @@ def main():
     (out_dir / "avayi.XCompose").write_text(compose_text, encoding="utf-8")
     print(f"wrote {out_dir / 'avayi.XCompose'}")
 
-    (out_dir / "avayi_keys.xml").write_text(render_android_keyboard(layout, shifted=False), encoding="utf-8")
-    print(f"wrote {out_dir / 'avayi_keys.xml'}")
-    (out_dir / "avayi_keys_shifted.xml").write_text(render_android_keyboard(layout, shifted=True), encoding="utf-8")
-    print(f"wrote {out_dir / 'avayi_keys_shifted.xml'}")
-
     board_svg, bottom = render_keyboard_svg(PAD, 60, layout)
     svg = wrap_svg([board_svg], SINGLE_WIDTH, bottom + 10, CAPTION)
     (out_dir / "layout.svg").write_text(svg, encoding="utf-8")
     print(f"wrote {out_dir / 'layout.svg'}")
-
-    android_svg, android_bottom = render_android_svg(PAD, 60, layout)
-    android_wrapped = wrap_svg([android_svg], SINGLE_WIDTH, android_bottom + 10, CAPTION)
-    (out_dir / "android_layout.svg").write_text(android_wrapped, encoding="utf-8")
-    print(f"wrote {out_dir / 'android_layout.svg'}")
 
     if args.compare:
         other = load_layout(args.compare)
@@ -513,6 +519,43 @@ def main():
         cmp_path = out_dir / f"vs-{args.compare}.svg"
         cmp_path.write_text(combined, encoding="utf-8")
         print(f"wrote {cmp_path}")
+
+
+def render_target(args):
+    """A target-specific fork: its own layout.yaml under layouts/<target>/
+    <version>/, producing only the artifacts that target actually uses."""
+    target = args.target
+    if target not in TARGET_ARTIFACTS:
+        sys.exit(f"error: unknown --target '{target}' (known: {', '.join(TARGET_ARTIFACTS)})")
+
+    out_dir = LAYOUTS_DIR / target / args.version / "generated"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    layout = load_layout(args.version, target=target)
+
+    if target == "android":
+        (out_dir / "avayi_keys.xml").write_text(render_android_keyboard(layout, shifted=False), encoding="utf-8")
+        print(f"wrote {out_dir / 'avayi_keys.xml'}")
+        (out_dir / "avayi_keys_shifted.xml").write_text(render_android_keyboard(layout, shifted=True), encoding="utf-8")
+        print(f"wrote {out_dir / 'avayi_keys_shifted.xml'}")
+
+        android_svg, android_bottom = render_android_svg(PAD, 60, layout)
+        android_wrapped = wrap_svg([android_svg], SINGLE_WIDTH, android_bottom + 10, CAPTION)
+        (out_dir / "android_layout.svg").write_text(android_wrapped, encoding="utf-8")
+        print(f"wrote {out_dir / 'android_layout.svg'}")
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("version", help="e.g. v0.0.2 — a versions/<name>/ folder, or layouts/<target>/<name>/ with --target")
+    ap.add_argument("--compare", metavar="OTHER_VERSION", help="also render OTHER_VERSION stacked below, for a diff view (base script only)")
+    ap.add_argument("--target", metavar="NAME", help="render a target-specific fork (layouts/<NAME>/<version>/layout.yaml) instead of the shared base script")
+    args = ap.parse_args()
+
+    if args.target:
+        render_target(args)
+    else:
+        render_base(args)
 
 
 if __name__ == "__main__":

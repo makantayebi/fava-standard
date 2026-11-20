@@ -1,13 +1,20 @@
+# This is an ANDROID-ONLY layout — it forks from fava-standard's shared
+# base script, not a SCRIPT_VERSION bump. See fava-standard/layouts/README.md
+# for why targets get their own independent layout versioning.
+target: android
+forked_from_script_version: "0.0.5"
 version: "0.0.6"
-name: "Fava (فاوآیی)"
+name: "Fava (فاوآیی) — Android"
 date: 2026-11-20
-supersedes: "0.0.5"
+supersedes: "fork of base 0.0.5"
 summary: >
   The / key is now a second backspace instead of typing a character —
   the first key this schema expresses as an action rather than a
-  codepoint. Its displaced characters move to shift levels that were
-  previously unused: / under shift+پ, Persian ؟ under shift+و, and
-  . under shift+د.
+  codepoint. A touchscreen keyboard benefits from a second, easy-to-reach
+  backspace the way a physical keyboard doesn't, so this diverges from
+  the base script rather than becoming a universal change. Its displaced
+  characters move to shift levels that were previously unused: / under
+  shift+پ, Persian ؟ under shift+و, and . under shift+د.
 
 keys:
   TLDE: { base: "U+00F7", shift: "U+00D7" }   # ÷ / × — unchanged
