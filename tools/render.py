@@ -101,6 +101,8 @@ COMPOSE_TRIGGER = {
     ("AD03", "shift"): 0xF101,  # E shift -> اَ
     ("AB05", "base"): 0xF104,   # B base  -> وْ (v0.0.5)
     ("AB05", "shift"): 0xF104,  # shift omitted = same as base; same trigger, not a separate rule
+    ("AD06", "base"): 0xF105,   # Y base  -> یْ (v0.0.6)
+    ("AD06", "shift"): 0xF105,  # shift omitted = same as base; same trigger, not a separate rule
 }
 
 
@@ -361,7 +363,11 @@ def render_android_svg(x0, y0, layout, page="shift"):
     title = f'{layout["version"]} — {layout["name"]} (Android on-screen layout{page_label})'
     parts = [f'<text x="{x0}" y="{y0 - 18}" font-size="16" font-weight="600" '
              f'fill="#e6e6e6">{tspans(title)}</text>']
+    # A row entirely hidden (e.g. the whole top row as of v0.0.8) is
+    # dropped, not left as a blank gap — matching render_android_keyboard,
+    # which simply never emits a <Row> for it.
     android_rows = [[(lbl, key) for lbl, key in row if key not in ANDROID_HIDE_KEYS] for row in ROWS]
+    android_rows = [row for row in android_rows if row]
     for row_i, row in enumerate(android_rows):
         y = y0 + row_i * (KEY_H + GAP)
         n = len(row)
@@ -445,7 +451,16 @@ ANDROID_KEY_LABEL = {"‌": "◂┆▸", "‍": "ZWJ"}  # نیم‌فاصله (t
 # still defines them; this is an Android-rendering choice only.
 # AB09 (v0.0.7): the dot it typed is already reachable via shift+AB06
 # (د) as of v0.0.6 — removed to save space next to the AB10 backspace key.
-ANDROID_HIDE_KEYS = {"AD11", "AD12", "BKSL", "AB09"}
+# TLDE + AE01-12 (v0.0.8): the whole top row removed — the digits were
+# already reachable via the ۱۲۳ page (v0.0.7), × already had a home there
+# too (shift+G/AC05), and ÷ moves to shift+X/AB02 instead (see layout.yaml).
+# AD11 (v0.0.8): un-hidden again — row AD is now the visual top row (the
+# old AE row is gone), and it gained ج (displaced when U/AD07 became ع).
+ANDROID_HIDE_KEYS = {
+    "AD12", "BKSL", "AB09",
+    "TLDE", "AE01", "AE02", "AE03", "AE04", "AE05", "AE06",
+    "AE07", "AE08", "AE09", "AE10", "AE11", "AE12",
+}
 
 
 def xml_escape(s):
@@ -604,15 +619,18 @@ def render_target(args):
             print(f"wrote {out_dir / 'avayi_keys_symbols.xml'}")
 
         android_svg, android_bottom = render_android_svg(PAD, 60, layout)
-        android_wrapped = wrap_svg([android_svg], SINGLE_WIDTH, android_bottom + 10, CAPTION, script_version=script_version)
+        fragments = [android_svg]
+        stack_bottom = android_bottom
+        if has_symbols_page:
+            # ۱۲۳ page variant stacked below the normal one, in the same
+            # file — one diagram per layout version, not one per page.
+            symbols_y0 = android_bottom + 60
+            symbols_svg, symbols_bottom = render_android_svg(PAD, symbols_y0, layout, page="symbols")
+            fragments.append(symbols_svg)
+            stack_bottom = symbols_bottom
+        android_wrapped = wrap_svg(fragments, SINGLE_WIDTH, stack_bottom + 10, CAPTION, script_version=script_version)
         (out_dir / "android_layout.svg").write_text(android_wrapped, encoding="utf-8")
         print(f"wrote {out_dir / 'android_layout.svg'}")
-
-        if has_symbols_page:
-            symbols_svg, symbols_bottom = render_android_svg(PAD, 60, layout, page="symbols")
-            symbols_wrapped = wrap_svg([symbols_svg], SINGLE_WIDTH, symbols_bottom + 10, CAPTION, script_version=script_version)
-            (out_dir / "android_layout_symbols.svg").write_text(symbols_wrapped, encoding="utf-8")
-            print(f"wrote {out_dir / 'android_layout_symbols.svg'}")
 
     elif kind == "xkb":
         (out_dir / "avayi.xkb_symbols").write_text(render_xkb(layout), encoding="utf-8")

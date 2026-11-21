@@ -1,0 +1,79 @@
+# This is an ANDROID-ONLY layout — it forks from fava-standard's shared
+# base script, not a SCRIPT_VERSION bump. See fava-standard/layouts/README.md
+# for why targets get their own independent layout versioning.
+target: android
+forked_from_script_version: "0.0.6"
+version: "0.0.8"
+name: "Fava (فاوآیی) — Android"
+date: 2026-11-20
+supersedes: "0.0.7"
+summary: >
+  The entire top row (TLDE + AE01-AE12) is removed — four rows instead
+  of five. Nothing it typed is lost: the digits were already reachable
+  via the ۱۲۳ page (0.0.7), × already had a home there too (shift+ل /
+  AC05), and ÷ moves to shift+ژ (AB02) — the one symbol from that row
+  with nowhere else to go.
+
+keys:
+  # non-physical: only the Android function row uses this — pulled from
+  # here instead of hardcoded, so layout.yaml stays the one source of
+  # truth for what character ends up where, even off the main grid.
+  FUNCROW_ZWNJ: { base: "U+200C" }
+
+  TLDE: { base: "U+00F7", shift: "U+00D7" }   # ÷ / × — unchanged
+
+  AE01: { base: "U+06F1", shift: "U+0021" }   # unchanged
+  AE02: { base: "U+06F2", shift: "U+0040" }   # unchanged
+  AE03: { base: "U+06F3", shift: "U+0023" }   # unchanged
+  AE04: { base: "U+06F4", shift: "U+FDFC" }   # unchanged
+  AE05: { base: "U+06F5", shift: "U+0025" }   # unchanged
+  AE06: { base: "U+06F6", shift: "U+005E" }   # unchanged
+  AE07: { base: "U+06F7", shift: "U+00B0" }   # unchanged
+  AE08: { base: "U+06F8", shift: "U+002A" }   # unchanged
+  AE09: { base: "U+06F9", shift: "U+0028" }   # unchanged
+  AE10: { base: "U+06F0", shift: "U+0029" }   # unchanged
+  AE11: { base: "U+002D", shift: "U+005F" }   # unchanged
+  AE12: { base: "U+003D", shift: "U+002B" }   # unchanged
+
+  AD01: { base: "U+064F", shift: ["U+0627", "U+064F"], symbols: "U+06F1" }   # Q: ـُ / اُ word-initial /ʔo/ — ۱۲۳ page: ۱
+  AD02: { base: "U+0650", shift: ["U+0627", "U+0650"], symbols: "U+06F2" }   # W: ـِ / اِ word-initial /ʔe/ — ۱۲۳ page: ۲
+  AD03: { base: "U+064E", shift: ["U+0627", "U+064E"], symbols: "U+06F3" }   # E: ـَ / اَ word-initial /ʔæ/ — ۱۲۳ page: ۳
+  AD04: { base: "U+0642", symbols: "U+06F4" }   # R: ق — ۱۲۳ page: ۴
+  AD05: { base: "U+0641", shift: "U+060C", symbols: "U+06F5" }   # T: ف / ، — ۱۲۳ page: ۵
+  AD06: { base: "U+06CC", symbols: "U+06F6" }   # Y: ی FARSI YEH (vowel /i/ reading) — swapped with D/AC03 on Android's ABC page (base script keeps یْ on Y, ی on D) — ۱۲۳ page: ۶
+  AD07: { base: "U+0639", symbols: "U+06F7" }   # U: ع AIN — ج moved out to the newly-shown AD11 key — ۱۲۳ page: ۷
+  AD08: { base: "U+0647", shift: "U+0651", symbols: "U+06F8" }   # I: ه / ّ — shift now also reaches the shadda already on Y (AD06): "heh with a shadda" is the more common mnemonic reading — ۱۲۳ page: ۸
+  AD09: { base: "U+062E", symbols: "U+06F9" }   # O: خ — ۱۲۳ page: ۹
+  AD10: { base: "U+0686", symbols: "U+06F0" }   # P: چ — ۱۲۳ page: ۰
+  AD11: { base: "U+062C" }                    # [: now shown on Android (was hidden) — ج, displaced from U/AD07 when U became ع
+  AD12: { base: "U+007D", shift: "U+005D" }   # ]: unchanged
+  BKSL: { base: "U+005C", shift: "U+007C" }   # unchanged
+
+  AC01: { base: "U+0634", symbols: "U+002F" }   # A: ش — ۱۲۳ page: / (slash, moved here from V/AB04; ! moved out to shift+د/AB06 on the base/shift pages)
+  AC02: { base: "U+0633", symbols: "U+002B" }   # S: س — ۱۲۳ page: + (replaces ٬, the Arabic thousands separator)
+  AC03: { base: ["U+06CC", "U+0652"], symbols: "U+002D" }   # D: یْ — consonant /j/ reading (Yale, Yemen, York) — swapped with Y/AD06 on Android's ABC page — ۱۲۳ page: - (hyphen; = moved out to H/AC06)
+  AC04: { base: "U+0628", symbols: "U+00F7" }   # F: ب — ۱۲۳ page: ÷ (moved here from X/AB02; $ moved out to C/AB03)
+  AC05: { base: "U+0644", symbols: "U+00D7" }   # G: ل — ۱۲۳ page: ×
+  AC06: { base: "U+0622", symbols: "U+003D" }   # H: آ — ۱۲۳ page: = (replaces ،, the Persian comma; moved here from D/AC03)
+  AC07: { base: "U+062A", symbols: "U+002A" }   # J: ت — shift tatweel dropped in v0.0.3, unneeded — ۱۲۳ page: *
+  AC08: { base: "U+0646", shift: "U+00AB", symbols: "U+0028" }   # K: ن / « — ۱۲۳ page: ( (swapped with L/AC09)
+  AC09: { base: "U+0645", shift: "U+00BB", symbols: "U+0029" }   # L: م / » — ۱۲۳ page: ) (swapped with K/AC08)
+  AC10: { base: "U+06A9", shift: "U+003A", symbols: "U+003A" }   # ;: ک / : — ۱۲۳ page: : (not individually specified; reused the existing shift value as the most defensible default)
+  AC11: { base: "U+06AF", shift: "U+061B", symbols: "U+061B" }   # ': گ / ؛ — ۱۲۳ page: ؛ (not individually specified; reused the existing shift value as the most defensible default)
+
+  AB01: { base: "SHIFT" }                     # physically Z — was ZWNJ (now in the Android function row, right of space, as FUNCROW_ZWNJ); shift relocates here, left of ژ
+  AB02: { base: "U+0698", symbols: "U+20AC" }   # X: ژ JEH — ۱۲۳ page: € (euro sign; ÷ moved out to F/AC04)
+  AB03: { base: "U+0632", symbols: "U+0024" }   # C: ز — ۱۲۳ page: $ (moved here from F/AC04)
+  AB04: { base: "U+0631", symbols: "U+FDFC" }   # V: ر — shift-level rial sign removed (not needed); still on the ۱۲۳ page
+  AB05: { base: ["U+0648", "U+0652"], symbols: "U+00A5" }   # B: وْ — و (vowel /uː/ reading) + سکون, in one keystroke — ۱۲۳ page: ¥ (yen sign)
+  AB06: { base: "U+062F", shift: "U+0021", symbols: "U+066A" }   # N: د / ! — ۱۲۳ page: ٪ (Persian-style percent sign)
+  AB07: { base: "U+067E", shift: "U+002E", symbols: "U+060D" }   # M: پ / . — ۱۲۳ page: ؍ (Persian date separator)
+  AB08: { base: "U+0648", shift: "U+061F" }   # ,: و WAW / ؟ — shift now carries the Persian question mark displaced from AB10
+  # AB09 (the dot key) removed in v0.0.7 — see ANDROID_HIDE_KEYS in render.py.
+  # Not deleted from the data model: layout.yaml still has no entry for it
+  # because it was never anything but "U+002E" (AB06 shift already covers it).
+  AB10: { base: "BACKSPACE" }                  # /: now a second backspace key, not a character — its old / and ؟ moved to AB07/AB08 shift
+
+  LSGT: { base: "U+20AC", shift: "U+00A7" }   # unchanged
+  KPDL: { base: "U+002E", shift: "U+002E" }   # unchanged
+  SPCE: { base: "U+0020", shift: "U+0020" }   # unchanged

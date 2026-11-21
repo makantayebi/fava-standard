@@ -3,6 +3,16 @@
 All notable changes to the Fava layout. Each entry links to the full
 writeup in that version's `notes.md`.
 
+## v0.0.6 — 2026-11-21
+
+- Disambiguated ی's two unrelated sounds (vowel /i/ vs. word-initial
+  consonant /j/ in loanwords like Yale/Yemen/York): ی keeps the vowel
+  reading unchanged; the new combination **یْ** (ی + سکون, one
+  keystroke, two codepoints — same construction as `v0.0.5`'s وْ) takes
+  the consonant reading, assigned to Y/AD06. ARABIC SHADDA, which lived
+  on Y through `v0.0.5`, moves to shift+ه. See
+  [`versions/v0.0.6/notes.md`](versions/v0.0.6/notes.md).
+
 ## v0.0.5 — 2026-11-18
 
 - B now types **وْ** directly — one keystroke, two codepoints — instead

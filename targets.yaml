@@ -30,11 +30,11 @@ targets:
   ubuntu-us-ansi:
     status: implemented
     repo: ubuntu-keyboard
-    layout_version: "0.0.5"
-    forked_from_script_version: "0.0.5"
+    layout_version: "0.0.6"
+    forked_from_script_version: "0.0.6"
     note: >
-      Tracked under layouts/ubuntu-us-ansi/v0.0.5/ — identical to base
-      0.0.5 today, no actual divergence yet, but given its own version
+      Tracked under layouts/ubuntu-us-ansi/v0.0.6/ — identical to base
+      0.0.6 today, no actual divergence yet, but given its own version
       number like every other target (see layouts/README.md) rather
       than being a special case that just reads versions/ directly.
       XKB's own keyboard geometry already abstracts ANSI-vs-ISO physical
@@ -45,19 +45,22 @@ targets:
   android:
     status: implemented
     repo: fava-android-keyboard
-    layout_version: "0.0.7"
-    forked_from_script_version: "0.0.5"
-    app_version: "0.3.0"
+    layout_version: "0.0.8"
+    forked_from_script_version: "0.0.6"
+    app_version: "0.3.1"
     note: >
-      Forked at base 0.0.5 (layouts/android/v0.0.7/layout.yaml). v0.0.7
-      relocates shift to AB01 (left of ژ) and ZWNJ to the function row
-      (right of space), removes two keys to make room (the dedicated
-      function-row delete, redundant since 0.0.6's backspace key; the
-      dot key, redundant since 0.0.6's shift+AB06), adds shift+ه as a
-      second home for the shadda, and adds a ۱۲۳ page (numbers/symbols
-      on the AD/AC rows only). All Android-specific — a physical
-      keyboard doesn't need a page toggle or benefit from relocating a
-      dedicated shift key. app_version is this target's own release
+      Forked at base 0.0.6 (layouts/android/v0.0.8/layout.yaml). v0.0.8
+      removes the entire top row (digits/symbols already reachable via
+      the ۱۲۳ page or relocated to shift levels), extends row AD to 11
+      keys (U becomes ع, a newly-shown key holds ج), and does a large
+      pass of symbol relocation on the ۱۲۳ page — currency signs (€ ¥
+      ﷼ $), Persian-specific punctuation (٪ ؍ « »), and math symbols
+      (+ = -), each placed through a deliberate, cascading reassignment
+      rather than left wherever they happened to land. Also adopts the
+      base script's ی/یْ split, but swaps which of Y/D gets which
+      reading relative to the base script — an intentional Android-only
+      divergence. All Android-specific — none of this applies to a
+      physical keyboard. app_version is this target's own release
       version (app/build.gradle.kts), independent of layout_version —
       it moves on Android-only changes (the globe/IME-switch key, bug
       fixes) that don't touch any layout.yaml at all.

@@ -1,0 +1,74 @@
+version: "0.0.6"
+name: "Fava (فاوآیی)"
+date: 2026-11-21
+supersedes: "0.0.5"
+summary: >
+  ی has carried two unrelated sounds — the vowel /i/ (beet, seek,
+  sheet) and, word-initially in loanwords, the consonant /j/ (Yale,
+  Yemen, York) — with no way to tell them apart in writing, the same
+  kind of gap that motivated the وْ disambiguation in v0.0.4/v0.0.5.
+  Same fix, same mechanism: ی keeps the vowel reading, unchanged, on
+  its own key (D/AC03). The new combination یْ (ی + سکون, one
+  keystroke, two codepoints — identical construction to وْ) takes the
+  /j/ consonant reading, assigned to Y/AD06. The ARABIC SHADDA that
+  lived on Y/AD06 moves to shift+ه (AD08) — a real base-script change
+  this time, not an Android-only rendering choice (Android already had
+  this exact shift+ه fallback as of its own v0.0.7 fork; this just
+  makes it universal). See notes.md for the full phonetic reasoning.
+
+keys:
+  TLDE: { base: "U+00F7", shift: "U+00D7" }   # ÷ / × — unchanged
+
+  AE01: { base: "U+06F1", shift: "U+0021" }   # unchanged
+  AE02: { base: "U+06F2", shift: "U+0040" }   # unchanged
+  AE03: { base: "U+06F3", shift: "U+0023" }   # unchanged
+  AE04: { base: "U+06F4", shift: "U+FDFC" }   # unchanged
+  AE05: { base: "U+06F5", shift: "U+0025" }   # unchanged
+  AE06: { base: "U+06F6", shift: "U+005E" }   # unchanged
+  AE07: { base: "U+06F7", shift: "U+00B0" }   # unchanged
+  AE08: { base: "U+06F8", shift: "U+002A" }   # unchanged
+  AE09: { base: "U+06F9", shift: "U+0028" }   # unchanged
+  AE10: { base: "U+06F0", shift: "U+0029" }   # unchanged
+  AE11: { base: "U+002D", shift: "U+005F" }   # unchanged
+  AE12: { base: "U+003D", shift: "U+002B" }   # unchanged
+
+  AD01: { base: "U+064F", shift: ["U+0627", "U+064F"] }   # Q: ـُ / اُ word-initial /ʔo/
+  AD02: { base: "U+0650", shift: ["U+0627", "U+0650"] }   # W: ـِ / اِ word-initial /ʔe/
+  AD03: { base: "U+064E", shift: ["U+0627", "U+064E"] }   # E: ـَ / اَ word-initial /ʔæ/
+  AD04: { base: "U+0642" }                    # R: ق — unchanged
+  AD05: { base: "U+0641", shift: "U+060C" }   # T: ف / ، — unchanged
+  AD06: { base: ["U+06CC", "U+0652"] }         # Y: یْ — ی (consonant /j/ reading: Yale, Yemen, York) + سکون, one keystroke, same construction as وْ. Was ARABIC SHADDA through v0.0.5 — see notes.md.
+  AD07: { base: "U+062C" }                    # U: ج — unchanged
+  AD08: { base: "U+0647", shift: "U+0651" }   # I: ه / ـّ ARABIC SHADDA — shadda's new home, displaced from Y/AD06
+  AD09: { base: "U+062E" }                    # O: خ — unchanged
+  AD10: { base: "U+0686" }                    # P: چ — unchanged
+  AD11: { base: "U+007B", shift: "U+005B" }   # [: unchanged
+  AD12: { base: "U+007D", shift: "U+005D" }   # ]: unchanged
+  BKSL: { base: "U+005C", shift: "U+007C" }   # unchanged
+
+  AC01: { base: "U+0634" }                    # A: ش — unchanged
+  AC02: { base: "U+0633" }                    # S: س — unchanged
+  AC03: { base: "U+06CC" }                    # D: ی FARSI YEH — was a یْ ligature in v0.0.1
+  AC04: { base: "U+0628" }                    # F: ب — unchanged
+  AC05: { base: "U+0644" }                    # G: ل — unchanged
+  AC06: { base: "U+0622" }                    # H: آ — unchanged
+  AC07: { base: "U+062A" }                    # J: ت — shift tatweel dropped in v0.0.3, unneeded
+  AC08: { base: "U+0646" }                    # K: ن — unchanged
+  AC09: { base: "U+0645" }                    # L: م — unchanged
+  AC10: { base: "U+06A9", shift: "U+003A" }   # ;: ک / : — unchanged
+  AC11: { base: "U+06AF", shift: "U+061B" }   # ': گ / ؛ — unchanged
+
+  AB01: { base: "U+200C" }                    # physically Z: ZWNJ — see notes.md for the full Y/Z lineage
+  AB02: { base: "U+0698" }                    # X: ژ JEH — the only ژ key as of v0.0.3
+  AB03: { base: "U+0632" }                    # C: ز — unchanged
+  AB04: { base: "U+0631" }                    # V: ر — unchanged
+  AB05: { base: ["U+0648", "U+0652"] }         # B: وْ — و (vowel /uː/ reading) + سکون, in one keystroke
+  AB06: { base: "U+062F" }                    # N: د — unchanged
+  AB07: { base: "U+067E" }                    # M: پ — unchanged
+  AB08: { base: "U+0648" }                    # ,: و WAW — the consonant default; B now types the full وْ vowel reading directly
+  AB09: { base: "U+002E" }                    # .: unchanged
+  AB10: { base: "U+002F", shift: "U+061F" }   # /: unchanged
+
+  LSGT: { base: "U+20AC", shift: "U+00A7" }   # unchanged
+  KPDL: { base: "U+002E", shift: "U+002E" }   # unchanged
+  SPCE: { base: "U+0020", shift: "U+0020" }   # unchanged
