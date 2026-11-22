@@ -45,11 +45,11 @@ targets:
   android:
     status: implemented
     repo: fava-android-keyboard
-    layout_version: "0.0.8"
+    layout_version: "0.0.9"
     forked_from_script_version: "0.0.6"
-    app_version: "0.3.1"
+    app_version: "0.3.2"
     note: >
-      Forked at base 0.0.6 (layouts/android/v0.0.8/layout.yaml). v0.0.8
+      Forked at base 0.0.6 (layouts/android/v0.0.9/layout.yaml). v0.0.8
       removes the entire top row (digits/symbols already reachable via
       the ۱۲۳ page or relocated to shift levels), extends row AD to 11
       keys (U becomes ع, a newly-shown key holds ج), and does a large
@@ -59,8 +59,14 @@ targets:
       rather than left wherever they happened to land. Also adopts the
       base script's ی/یْ split, but swaps which of Y/D gets which
       reading relative to the base script — an intentional Android-only
-      divergence. All Android-specific — none of this applies to a
-      physical keyboard. app_version is this target's own release
-      version (app/build.gradle.kts), independent of layout_version —
-      it moves on Android-only changes (the globe/IME-switch key, bug
-      fixes) that don't touch any layout.yaml at all.
+      divergence. v0.0.9 continues the ۱۲۳-page reassignment (٪ to the
+      newly-shown [/AD11 key; : and ؛ become ≈ and ≠; و before backspace
+      becomes ✓; N and M become < and >) and replaces U's ع with اْ
+      (الف + سکون, matching the existing وْ/یْ combining-mark pattern) —
+      ع is dropped from this layout entirely. All Android-specific —
+      none of this applies to a physical keyboard. app_version is this
+      target's own release version (app/build.gradle.kts), independent
+      of layout_version — it moves on Android-only changes (the
+      globe/IME-switch key, the RTL-mirrored backspace icon, the
+      outline/filled shift-state icon, tap haptics, key-elevation/press
+      visual polish, bug fixes) that don't touch any layout.yaml at all.

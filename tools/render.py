@@ -382,7 +382,7 @@ def render_android_svg(x0, y0, layout, page="shift"):
     func_y = y0 + len(android_rows) * (KEY_H + GAP)
     zwnj_text = chars_for(cp_list(layout["keys"]["FUNCROW_ZWNJ"]["base"]))
     zwnj_disp = ANDROID_KEY_LABEL.get(zwnj_text, zwnj_text).replace("\\n", "\n")
-    toggle_label = "ABC" if page == "symbols" else "۱۲۳"
+    toggle_label = "آ ب پ" if page == "symbols" else "۱۲۳"
     func_row = [("toggle", toggle_label, ""), ("globe", "🌐", ""), ("space", "␣", ""),
                 ("zwnj", zwnj_disp, ""), ("enter", "⏎", "")]
     func_widths = [0.12, 0.12, 0.50, 0.13, 0.13]
@@ -503,18 +503,29 @@ def render_android_keyboard(layout, page, with_function_row=True):
             if level is None:
                 level = spec.get("base")  # omitted level = same as base
             if level == ACTION_BACKSPACE:
+                # the stock system glyph points left (correct for LTR: the
+                # previous character sits to the left of the cursor) — for
+                # RTL Persian text the previous character is to the right,
+                # so this app ships its own horizontally-mirrored version
+                # instead (res/drawable/ic_backspace_rtl.xml), not the
+                # system ic_input_delete.
                 lines.append(
                     '        <Key android:codes="-5" '
-                    'android:keyIcon="@android:drawable/ic_input_delete" '
+                    'android:keyIcon="@drawable/ic_backspace_rtl" '
                     'android:isRepeatable="true" />'
                 )
                 continue
             if level == ACTION_SHIFT:
                 # momentary shift (one character, then reverts) is handled
                 # in Kotlin; isSticky is deliberately omitted — that's a
-                # lock-style flag we don't want
+                # lock-style flag we don't want. Each page is its own fixed
+                # Keyboard object that only ever appears while shift is on
+                # ("shift" page) or off (every other page) — so which icon to
+                # bake in is a static per-page choice, not something Kotlin
+                # needs to swap at runtime.
+                icon = "ic_shift_filled" if page == "shift" else "ic_shift_outline"
                 lines.append(
-                    '        <Key android:codes="-1" android:keyLabel="⇧" '
+                    f'        <Key android:codes="-1" android:keyIcon="@drawable/{icon}" '
                     'android:isModifier="true" />'
                 )
                 continue
@@ -537,7 +548,7 @@ def render_android_keyboard(layout, page, with_function_row=True):
         if page == "symbols":
             # same control, code 12 either way — FavaInputMethodService
             # toggles the page and doesn't care which label was showing
-            lines.append('        <Key android:codes="12" android:keyLabel="ABC" android:keyWidth="12%p" />')
+            lines.append('        <Key android:codes="12" android:keyLabel="آ ب پ" android:keyWidth="12%p" />')
         else:
             lines.append('        <Key android:codes="12" android:keyLabel="۱۲۳" android:keyWidth="12%p" />')
         # globe/language-switch key, code 11 — same role as Gboard's own globe
