@@ -45,11 +45,11 @@ targets:
   android:
     status: implemented
     repo: fava-android-keyboard
-    layout_version: "0.0.9"
+    layout_version: "0.0.10"
     forked_from_script_version: "0.0.6"
-    app_version: "0.3.2"
+    app_version: "0.3.3"
     note: >
-      Forked at base 0.0.6 (layouts/android/v0.0.9/layout.yaml). v0.0.8
+      Forked at base 0.0.6 (layouts/android/v0.0.10/layout.yaml). v0.0.8
       removes the entire top row (digits/symbols already reachable via
       the ۱۲۳ page or relocated to shift levels), extends row AD to 11
       keys (U becomes ع, a newly-shown key holds ج), and does a large
@@ -63,10 +63,20 @@ targets:
       newly-shown [/AD11 key; : and ؛ become ≈ and ≠; و before backspace
       becomes ✓; N and M become < and >) and replaces U's ع with اْ
       (الف + سکون, matching the existing وْ/یْ combining-mark pattern) —
-      ع is dropped from this layout entirely. All Android-specific —
-      none of this applies to a physical keyboard. app_version is this
-      target's own release version (app/build.gradle.kts), independent
-      of layout_version — it moves on Android-only changes (the
+      ع is dropped from this layout entirely. v0.0.10 fixes a rendering
+      bug caught after v0.0.9 had already been committed/shipped
+      (app 0.3.2) — the ۱۲۳/ABC toggle key's "آ ب پ" label used plain
+      spaces instead of ZWNJ (نیم‌فاصله), now "آ‌ب‌پ" (reversed to
+      "پ‌ب‌آ" in storage, since KeyboardView doesn't bidi-reorder key
+      labels) — plus a real key-mapping change: AB09 (the dot key,
+      hidden since v0.0.7) is shown again, restored to base ".",
+      shift "؟" right next to backspace; AB08's freed shift level
+      (و, previously ؟) becomes "!", moved in from AB06 (د), whose
+      shift level is now unset. All Android-specific — none of this
+      applies to a physical keyboard. app_version is this target's own
+      release version (app/build.gradle.kts), independent of
+      layout_version — it moves on Android-only changes (the
       globe/IME-switch key, the RTL-mirrored backspace icon, the
       outline/filled shift-state icon, tap haptics, key-elevation/press
-      visual polish, bug fixes) that don't touch any layout.yaml at all.
+      visual polish, the Gboard-style emoji picker, bug fixes) that
+      don't touch any layout.yaml at all.

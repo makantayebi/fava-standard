@@ -382,10 +382,10 @@ def render_android_svg(x0, y0, layout, page="shift"):
     func_y = y0 + len(android_rows) * (KEY_H + GAP)
     zwnj_text = chars_for(cp_list(layout["keys"]["FUNCROW_ZWNJ"]["base"]))
     zwnj_disp = ANDROID_KEY_LABEL.get(zwnj_text, zwnj_text).replace("\\n", "\n")
-    toggle_label = "آ ب پ" if page == "symbols" else "۱۲۳"
-    func_row = [("toggle", toggle_label, ""), ("globe", "🌐", ""), ("space", "␣", ""),
-                ("zwnj", zwnj_disp, ""), ("enter", "⏎", "")]
-    func_widths = [0.12, 0.12, 0.50, 0.13, 0.13]
+    toggle_label = "آ‌ب‌پ" if page == "symbols" else "۱۲۳"
+    func_row = [("toggle", toggle_label, ""), ("emoji", "😀", ""), ("globe", "🌐", ""),
+                ("space", "␣", ""), ("zwnj", zwnj_disp, ""), ("enter", "⏎", "")]
+    func_widths = [0.12, 0.12, 0.12, 0.38, 0.13, 0.13]
     fx = x0
     for (corner, lo, hi), frac in zip(func_row, func_widths):
         w = BOARD_W * frac
@@ -449,15 +449,17 @@ ANDROID_KEY_LABEL = {"‌": "◂┆▸", "‍": "ZWJ"}  # نیم‌فاصله (t
 # doesn't need the rarely-used {}\ cluster taking up row-2 space the way a
 # physical keyboard's dedicated keys do. The underlying script/layout.yaml
 # still defines them; this is an Android-rendering choice only.
-# AB09 (v0.0.7): the dot it typed is already reachable via shift+AB06
+# AB09 (v0.0.7): the dot it typed was already reachable via shift+AB06
 # (د) as of v0.0.6 — removed to save space next to the AB10 backspace key.
+# Un-hidden again in v0.0.10, restored to its original role, once that
+# shift+AB06 duplicate was no longer the only way to reach it.
 # TLDE + AE01-12 (v0.0.8): the whole top row removed — the digits were
 # already reachable via the ۱۲۳ page (v0.0.7), × already had a home there
 # too (shift+G/AC05), and ÷ moves to shift+X/AB02 instead (see layout.yaml).
 # AD11 (v0.0.8): un-hidden again — row AD is now the visual top row (the
 # old AE row is gone), and it gained ج (displaced when U/AD07 became ع).
 ANDROID_HIDE_KEYS = {
-    "AD12", "BKSL", "AB09",
+    "AD12", "BKSL",
     "TLDE", "AE01", "AE02", "AE03", "AE04", "AE05", "AE06",
     "AE07", "AE08", "AE09", "AE10", "AE11", "AE12",
 }
@@ -470,6 +472,12 @@ def xml_escape(s):
 
 SYMBOLS_CODE = 12  # the ۱۲۳/ABC page-toggle key — FavaInputMethodService
 # handles this directly, same spirit as GLOBE_CODE.
+EMOJI_CODE = 13  # the emoji-picker-toggle key — same spirit again. Unlike
+# SYMBOLS_CODE this doesn't correspond to a rendered Keyboard XML page at
+# all — the emoji picker is a scrollable, categorized panel (Gboard-style),
+# a custom Android view built entirely in Kotlin (EmojiData.kt), not a
+# layout.yaml/render.py concern. This key's XML presence (below) is just
+# the button that opens it.
 
 
 def render_android_keyboard(layout, page, with_function_row=True):
@@ -547,15 +555,25 @@ def render_android_keyboard(layout, page, with_function_row=True):
         lines.append('    <Row android:keyWidth="12%p" android:rowEdgeFlags="bottom">')
         if page == "symbols":
             # same control, code 12 either way — FavaInputMethodService
-            # toggles the page and doesn't care which label was showing
-            lines.append('        <Key android:codes="12" android:keyLabel="آ ب پ" android:keyWidth="12%p" />')
+            # toggles the page and doesn't care which label was showing.
+            # Letters stored پ‌ب‌آ (reverse of reading order!) because
+            # KeyboardView's key-label drawing doesn't apply Unicode
+            # bidi reordering the way render_android_svg's diagram
+            # preview (Pango/librsvg) does — storing them backwards is
+            # what makes them land correctly on screen, reading right
+            # to left, as آ‌ب‌پ.
+            lines.append('        <Key android:codes="12" android:keyLabel="پ‌ب‌آ" android:keyWidth="12%p" />')
         else:
             lines.append('        <Key android:codes="12" android:keyLabel="۱۲۳" android:keyWidth="12%p" />')
+        # emoji-page-toggle key (v0.0.10), between the ۱۲۳ toggle and globe —
+        # same sticky-toggle spirit as SYMBOLS_CODE, handled in Kotlin
+        lines.append('        <Key android:codes="13" android:keyLabel="😀" android:keyWidth="12%p" />')
         # globe/language-switch key, code 11 — same role as Gboard's own globe
         # key: hand off to the system's "switch to next IME" (FavaInputMethodService
         # handles GLOBE_CODE directly, no XML-level special casing beyond the code)
         lines.append('        <Key android:codes="11" android:keyLabel="🌐" android:keyWidth="12%p" />')
-        lines.append(f'        <Key android:codes="{code+1}" android:keyLabel="{xml_escape(chars_for(cp_list(layout["keys"]["SPCE"]["base"])) or " ")}" android:keyOutputText=" " android:keyWidth="50%p" android:isRepeatable="true" />')
+        # space gives up width (50% -> 38%) to make room for the emoji key
+        lines.append(f'        <Key android:codes="{code+1}" android:keyLabel="{xml_escape(chars_for(cp_list(layout["keys"]["SPCE"]["base"])) or " ")}" android:keyOutputText=" " android:keyWidth="38%p" android:isRepeatable="true" />')
         zwnj_text = chars_for(cp_list(layout["keys"]["FUNCROW_ZWNJ"]["base"]))
         zwnj_label = ANDROID_KEY_LABEL.get(zwnj_text, zwnj_text)
         lines.append(f'        <Key android:codes="{code+2}" android:keyLabel="{xml_escape(zwnj_label)}" android:keyOutputText="{xml_escape(zwnj_text)}" android:keyWidth="13%p" />')
@@ -628,6 +646,10 @@ def render_target(args):
         if has_symbols_page:
             (out_dir / "avayi_keys_symbols.xml").write_text(render_android_keyboard(layout, page="symbols"), encoding="utf-8")
             print(f"wrote {out_dir / 'avayi_keys_symbols.xml'}")
+        # No avayi_keys_emoji.xml / emoji diagram page — the emoji picker
+        # is a custom Kotlin view (EmojiData.kt), not a rendered Keyboard
+        # page, so there's nothing for render.py to generate for it beyond
+        # the toggle button already baked into every page's function row.
 
         android_svg, android_bottom = render_android_svg(PAD, 60, layout)
         fragments = [android_svg]

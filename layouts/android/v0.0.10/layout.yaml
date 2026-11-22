@@ -1,0 +1,93 @@
+# This is an ANDROID-ONLY layout — it forks from fava-standard's shared
+# base script, not a SCRIPT_VERSION bump. See fava-standard/layouts/README.md
+# for why targets get their own independent layout versioning.
+target: android
+forked_from_script_version: "0.0.6"
+version: "0.0.10"
+name: "Fava (فاوآیی) — Android"
+date: 2026-11-22
+supersedes: "0.0.9"
+summary: >
+  Two changes from v0.0.9. render.py-level: the ۱۲۳/ABC toggle key's
+  label on the symbols page ("آ ب پ") now joins its three letters with
+  ZWNJ (نیم‌فاصله, U+200C) instead of plain spaces, stored reversed
+  (پ‌ب‌آ) to land correctly on screen since KeyboardView's key-label
+  drawing doesn't bidi-reorder. Both of these exist as their own
+  version only because v0.0.9 was already committed/shipped
+  (app 0.3.2) by the time they were caught.
+
+  Real key-mapping changes: AB07 (M, پ) loses its shift-level "." —
+  AB09 (the dot key, hidden since v0.0.7) is shown again instead,
+  restored to its pre-v0.0.7 role (base ".", shift "؟") right before
+  backspace. That frees up AB08's shift level (و, previously ؟) for
+  "!", moved in from AB06 (د), whose shift level is now unset.
+
+  Also new: a function-row key (between globe and the ۱۲۳ toggle) that
+  opens a Gboard-style emoji picker — a scrollable, categorized panel,
+  not a rendered Keyboard page, so it's a pure app_version-side feature
+  (FavaInputMethodService.kt + EmojiData.kt in fava-android-keyboard),
+  not layout.yaml data. This key's presence in the function row is the
+  only render.py-level change for it. Space shrinks from 50% to 38% to
+  make room for the new key.
+
+keys:
+  # non-physical: only the Android function row uses this — pulled from
+  # here instead of hardcoded, so layout.yaml stays the one source of
+  # truth for what character ends up where, even off the main grid.
+  FUNCROW_ZWNJ: { base: "U+200C" }
+
+  TLDE: { base: "U+00F7", shift: "U+00D7" }   # ÷ / × — unchanged
+
+  AE01: { base: "U+06F1", shift: "U+0021" }   # unchanged
+  AE02: { base: "U+06F2", shift: "U+0040" }   # unchanged
+  AE03: { base: "U+06F3", shift: "U+0023" }   # unchanged
+  AE04: { base: "U+06F4", shift: "U+FDFC" }   # unchanged
+  AE05: { base: "U+06F5", shift: "U+0025" }   # unchanged
+  AE06: { base: "U+06F6", shift: "U+005E" }   # unchanged
+  AE07: { base: "U+06F7", shift: "U+00B0" }   # unchanged
+  AE08: { base: "U+06F8", shift: "U+002A" }   # unchanged
+  AE09: { base: "U+06F9", shift: "U+0028" }   # unchanged
+  AE10: { base: "U+06F0", shift: "U+0029" }   # unchanged
+  AE11: { base: "U+002D", shift: "U+005F" }   # unchanged
+  AE12: { base: "U+003D", shift: "U+002B" }   # unchanged
+
+  AD01: { base: "U+064F", shift: ["U+0627", "U+064F"], symbols: "U+06F1" }   # Q: ـُ / اُ word-initial /ʔo/ — ۱۲۳ page: ۱
+  AD02: { base: "U+0650", shift: ["U+0627", "U+0650"], symbols: "U+06F2" }   # W: ـِ / اِ word-initial /ʔe/ — ۱۲۳ page: ۲
+  AD03: { base: "U+064E", shift: ["U+0627", "U+064E"], symbols: "U+06F3" }   # E: ـَ / اَ word-initial /ʔæ/ — ۱۲۳ page: ۳
+  AD04: { base: "U+0642", symbols: "U+06F4" }   # R: ق — ۱۲۳ page: ۴
+  AD05: { base: "U+0641", shift: "U+060C", symbols: "U+06F5" }   # T: ف / ، — ۱۲۳ page: ۵
+  AD06: { base: "U+06CC", symbols: "U+06F6" }   # Y: ی FARSI YEH (vowel /i/ reading) — swapped with D/AC03 on Android's ABC page (base script keeps یْ on Y, ی on D) — ۱۲۳ page: ۶
+  AD07: { base: ["U+0627", "U+0652"], symbols: "U+06F7" }   # U: اْ — الف + سکون (ع dropped) — ۱۲۳ page: ۷
+  AD08: { base: "U+0647", shift: "U+0651", symbols: "U+06F8" }   # I: ه / ّ — shift now also reaches the shadda already on Y (AD06): "heh with a shadda" is the more common mnemonic reading — ۱۲۳ page: ۸
+  AD09: { base: "U+062E", symbols: "U+06F9" }   # O: خ — ۱۲۳ page: ۹
+  AD10: { base: "U+0686", symbols: "U+06F0" }   # P: چ — ۱۲۳ page: ۰
+  AD11: { base: "U+062C", symbols: "U+066A" }   # [: now shown on Android (was hidden) — ج, displaced from U/AD07 when U became ع — ۱۲۳ page: ٪ (moved here from N/AB06)
+  AD12: { base: "U+007D", shift: "U+005D" }   # ]: unchanged
+  BKSL: { base: "U+005C", shift: "U+007C" }   # unchanged
+
+  AC01: { base: "U+0634", symbols: "U+002F" }   # A: ش — ۱۲۳ page: / (slash, moved here from V/AB04; ! moved out to shift+د/AB06 on the base/shift pages)
+  AC02: { base: "U+0633", symbols: "U+002B" }   # S: س — ۱۲۳ page: + (replaces ٬, the Arabic thousands separator)
+  AC03: { base: ["U+06CC", "U+0652"], symbols: "U+002D" }   # D: یْ — consonant /j/ reading (Yale, Yemen, York) — swapped with Y/AD06 on Android's ABC page — ۱۲۳ page: - (hyphen; = moved out to H/AC06)
+  AC04: { base: "U+0628", symbols: "U+00F7" }   # F: ب — ۱۲۳ page: ÷ (moved here from X/AB02; $ moved out to C/AB03)
+  AC05: { base: "U+0644", symbols: "U+00D7" }   # G: ل — ۱۲۳ page: ×
+  AC06: { base: "U+0622", symbols: "U+003D" }   # H: آ — ۱۲۳ page: = (replaces ،, the Persian comma; moved here from D/AC03)
+  AC07: { base: "U+062A", symbols: "U+002A" }   # J: ت — shift tatweel dropped in v0.0.3, unneeded — ۱۲۳ page: *
+  AC08: { base: "U+0646", shift: "U+00AB", symbols: "U+0028" }   # K: ن / « — ۱۲۳ page: ( (swapped with L/AC09)
+  AC09: { base: "U+0645", shift: "U+00BB", symbols: "U+0029" }   # L: م / » — ۱۲۳ page: ) (swapped with K/AC08)
+  AC10: { base: "U+06A9", shift: "U+003A", symbols: "U+2248" }   # ;: ک / : — ۱۲۳ page: ≈ (approximately equal)
+  AC11: { base: "U+06AF", shift: "U+061B", symbols: "U+2260" }   # ': گ / ؛ — ۱۲۳ page: ≠ (not equal)
+
+  AB01: { base: "SHIFT" }                     # physically Z — was ZWNJ (now in the Android function row, right of space, as FUNCROW_ZWNJ); shift relocates here, left of ژ
+  AB02: { base: "U+0698", symbols: "U+20AC" }   # X: ژ JEH — ۱۲۳ page: € (euro sign; ÷ moved out to F/AC04)
+  AB03: { base: "U+0632", symbols: "U+0024" }   # C: ز — ۱۲۳ page: $ (moved here from F/AC04)
+  AB04: { base: "U+0631", symbols: "U+FDFC" }   # V: ر — shift-level rial sign removed (not needed); still on the ۱۲۳ page
+  AB05: { base: ["U+0648", "U+0652"], symbols: "U+00A5" }   # B: وْ — و (vowel /uː/ reading) + سکون, in one keystroke — ۱۲۳ page: ¥ (yen sign)
+  AB06: { base: "U+062F", symbols: "U+003C" }   # N: د — shift "!" moved out to shift+و/AB08 — ۱۲۳ page: < (£ dropped)
+  AB07: { base: "U+067E", symbols: "U+003E" }   # M: پ — shift "." moved out to its own function-row key — ۱۲۳ page: > (؍ dropped)
+  AB08: { base: "U+0648", shift: "U+0021", symbols: "U+2713" }   # ,: و WAW / ! — shift "!" moved in from AB06, now that ؟ has moved back to shift+AB09 — ۱۲۳ page: ✓ (checkmark)
+  AB09: { base: "U+002E", shift: "U+061F" }   # .: dot / ؟ — shown again (v0.0.10), restored as a dedicated key right before backspace, its original v0.0.6 role before being hidden in v0.0.7
+  AB10: { base: "BACKSPACE" }                  # /: now a second backspace key, not a character — its old / and ؟ moved to AB07/AB08 shift
+
+  LSGT: { base: "U+20AC", shift: "U+00A7" }   # unchanged
+  KPDL: { base: "U+002E", shift: "U+002E" }   # unchanged
+  SPCE: { base: "U+0020", shift: "U+0020" }   # unchanged
